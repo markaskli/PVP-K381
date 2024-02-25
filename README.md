@@ -5,4 +5,5 @@ Sveiką gyvenseną skatinanti sistema.
 ```
 cd client-app
 npx expo start
+
 ```
