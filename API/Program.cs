@@ -1,3 +1,5 @@
+using API.Services.ParentService;
+using API.Services.UserService;
 using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,15 +13,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<Supabase.Client>(_ =>
     new Supabase.Client(
-        builder.Configuration["SupabaseUrl"],
-        builder.Configuration["SupabaseKey"],
+        builder.Configuration["Supabase:SupabaseUrl"],
+        builder.Configuration["Supabase:SupabaseKey"],
         new SupabaseOptions
         {
             AutoRefreshToken = true,
             AutoConnectRealtime = true,
         }
-        )
-    );
+       )
+);
+
+builder.Services.AddTransient<IParentService, ParentService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();
 
