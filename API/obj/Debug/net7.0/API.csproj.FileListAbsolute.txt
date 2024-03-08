@@ -47,3 +47,6 @@ C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\obj\Debug\net7.0
 C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\obj\Debug\net7.0\API.pdb
 C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\obj\Debug\net7.0\API.genruntimeconfig.cache
 C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\obj\Debug\net7.0\ref\API.dll
+C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Markas\Desktop\Produkto vystymo projektas\PVP-K381\API\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll

@@ -16,15 +16,22 @@ namespace API.Services.ParentService
         {
             var parent = new Parent()
             {
-                FullName = request.FullName,
-                ProfilePictureUrl = request.ProfilePictureUrl,
+                Name = request.Name,
+                Surname= request.Surname,
                 Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                BirthDate = request.BirthDate,
+                
             };
 
             var userData = new Dictionary<string, object>
             {
-                { "full_name", request.FullName },
-                { "profile_picture_url", request.ProfilePictureUrl }
+                { "name", request.Name },
+                { "surname", request.Surname },
+                { "phone_number", request.PhoneNumber},
+                { "birth_date", request.BirthDate },
+                { "profile_picture_url", request.ProfilePictureUrl },
+                { "role_id", parent.RoleId },
             };
 
             var signUpOptions = new SignUpOptions

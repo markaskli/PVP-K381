@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v7.0": {
       "API/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.16",
           "Microsoft.AspNetCore.OpenApi": "7.0.11",
           "Swashbuckle.AspNetCore": "6.5.0",
           "supabase-csharp": "0.15.0"
@@ -38,6 +39,17 @@
           "lib/netstandard2.0/Supabase.Gotrue.dll": {
             "assemblyVersion": "4.2.6.0",
             "fileVersion": "4.2.6.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.16": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.35.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "assemblyVersion": "7.0.16.0",
+            "fileVersion": "7.0.1624.6815"
           }
         }
       },
@@ -80,6 +92,30 @@
           "lib/net6.0/Microsoft.IdentityModel.Logging.dll": {
             "assemblyVersion": "7.0.3.0",
             "fileVersion": "7.0.3.41017"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Protocols/6.35.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Logging": "7.0.3",
+          "Microsoft.IdentityModel.Tokens": "7.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.IdentityModel.Protocols.dll": {
+            "assemblyVersion": "6.35.0.0",
+            "fileVersion": "6.35.0.41201"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Protocols.OpenIdConnect/6.35.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols": "6.35.0",
+          "System.IdentityModel.Tokens.Jwt": "7.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {
+            "assemblyVersion": "6.35.0.0",
+            "fileVersion": "6.35.0.41201"
           }
         }
       },
@@ -275,6 +311,13 @@
       "path": "gotrue-csharp/4.2.6",
       "hashPath": "gotrue-csharp.4.2.6.nupkg.sha512"
     },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.16": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-m1xDkk56jfwFfsuXfkvJ0TEGiGW2zZyUdeg9TW0TqSIo9yYseFKxuQPXIaZX7CYF0H54gWbaQdq7X/3dpSXwOg==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/7.0.16",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.7.0.16.nupkg.sha512"
+    },
     "Microsoft.AspNetCore.OpenApi/7.0.11": {
       "type": "package",
       "serviceable": true,
@@ -309,6 +352,20 @@
       "sha512": "sha512-b6GbGO+2LOTBEccHhqoJsOsmemG4A/MY+8H0wK/ewRhiG+DCYwEnucog1cSArPIY55zcn+XdZl0YEiUHkpDISQ==",
       "path": "microsoft.identitymodel.logging/7.0.3",
       "hashPath": "microsoft.identitymodel.logging.7.0.3.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BPQhlDzdFvv1PzaUxNSk+VEPwezlDEVADIKmyxubw7IiELK18uJ06RQ9QKKkds30XI+gDu9n8j24XQ8w7fjWcg==",
+      "path": "microsoft.identitymodel.protocols/6.35.0",
+      "hashPath": "microsoft.identitymodel.protocols.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols.OpenIdConnect/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LMtVqnECCCdSmyFoCOxIE5tXQqkOLrvGrL7OxHg41DIm1bpWtaCdGyVcTAfOQpJXvzND9zUKIN/lhngPkYR8vg==",
+      "path": "microsoft.identitymodel.protocols.openidconnect/6.35.0",
+      "hashPath": "microsoft.identitymodel.protocols.openidconnect.6.35.0.nupkg.sha512"
     },
     "Microsoft.IdentityModel.Tokens/7.0.3": {
       "type": "package",

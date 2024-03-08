@@ -9,8 +9,15 @@ namespace API.Models
         [PrimaryKey("id")]
         public int Id { get; set; }
         [Column("username")]
-        public required string Username { get; set; }
+        public string Username { get; set; } = null!;
+        [Column("role_id")]
+        public int RoleId { get; set; } = 2;
         [Reference(typeof(Parent))]
-        public required Parent Parent { get; set; }
+        public Parent Parent { get; set; }
+
+        public Child()
+        {
+            Parent = new Parent();
+        }
     }
 }

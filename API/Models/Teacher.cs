@@ -9,13 +9,21 @@ namespace API.Models
         [PrimaryKey("id")]
         public int Id { get; set; }
         [Column("name")]
-        public required string Name { get; set; }
+        public string Name { get; set; } = null!;
         [Column("surname")]
-        public required string Surname { get; set; } 
+        public string Surname { get; set; } = null!;
+        [Column("phone_number")]
+        public string PhoneNumber { get; set; } = null!;
+        [Column("birth_date")]
+        public DateTime BirthDate { get; set; }
+        [Column("school")]
+        public string School { get; set; } = null!;
         [Column("email")]
-        public required string Email { get; set; } 
+        public  string Email { get; set; } = null!;
+        [Column("profile_picture_url")]
+        public string ProfilePictureUrl { get; set; } = null!;
+        [Column("role_id")]
+        public int RoleId { get; set; } = 3;
         
-        
-
     }
 }
