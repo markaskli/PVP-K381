@@ -1,5 +1,9 @@
-﻿using API.Models;
+﻿using API.Exceptions;
+using API.Models;
+using API.Models.DTOs.Child;
 using API.Models.DTOs.Parent;
+using API.Utils;
+using Newtonsoft.Json.Linq;
 using Supabase.Gotrue;
 
 namespace API.Services.ParentService
@@ -12,17 +16,8 @@ namespace API.Services.ParentService
             _supabaseClient = supabase;
         }
 
-        public async Task<Session?> SignUp(CreateParentDTO request)
+        public async Task<Session> SignUp(CreateParentDTO request)
         {
-            var parent = new Parent()
-            {
-                Name = request.Name,
-                Surname= request.Surname,
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                BirthDate = request.BirthDate,
-                
-            };
 
             var userData = new Dictionary<string, object>
             {
@@ -30,8 +25,8 @@ namespace API.Services.ParentService
                 { "surname", request.Surname },
                 { "phone_number", request.PhoneNumber},
                 { "birth_date", request.BirthDate },
-                { "profile_picture_url", request.ProfilePictureUrl },
-                { "role_id", parent.RoleId },
+                { "profile_picture_url", string.Empty },
+                { "role_id", 1 },
             };
 
             var signUpOptions = new SignUpOptions
@@ -41,11 +36,17 @@ namespace API.Services.ParentService
 
 
             var session = await _supabaseClient.Auth.SignUp(request.Email, request.Password, signUpOptions);
+            if ((session == null) || session.User != null && session.User.Identities != null && session.User.Identities.Count == 0)
+            {
+                throw new SignInFailedException("An error occurred while trying to sign up parent user.");
+            }
 
             return session;
         }
 
-        public async Task<User?> UpdateParentInformation(UpdateParentDTO request)
+
+        // TO DO
+        public async Task<User> UpdateParentInformation(UpdateParentDTO request)
         {
             var attrs = new UserAttributes
             {
@@ -64,9 +65,70 @@ namespace API.Services.ParentService
 
         }
 
-        public async Task<bool> DeleteParent(int parentId)
+        public async Task<ChildRegistrationDataDTO> RegisterChild(CreateInitialChildDTO request, string requestToken)
         {
-            return true;
+            string invitationCode = string.Empty;
+
+            var existingCodes = await _supabaseClient.From<Child>()
+                .Select(x => new object[] { x.InvitationCode })
+                .Get();
+
+            if (existingCodes != null && existingCodes.Content != null)
+            {
+                var existingInvitationCodes = JArray.Parse(existingCodes.Content);
+                bool codeExists = existingInvitationCodes.Any(x => x["invitation_code"]?.ToString() == invitationCode);
+                while (codeExists)
+                {
+                    invitationCode = RandomGenerator.GenerateRandomString(6);
+                    codeExists = existingInvitationCodes.Any(x => x["invitation_code"]?.ToString() == invitationCode);
+                }
+
+            }
+            else
+            {
+                invitationCode = RandomGenerator.GenerateRandomString(6);
+            }
+
+            var parent = await _supabaseClient.Auth.GetUser(requestToken);
+            if (parent == null)
+            {
+                throw new Exception("An error occurred while trying to get the information of current user.");
+            }
+
+            var childData = new Dictionary<string, object>
+            {
+                { "username", string.Empty },
+                { "name", request.Name },
+                { "class", request.Class },
+                { "parent_id", parent.Id },
+                { "role_id", 2 },
+                { "invitation_code", invitationCode },
+            };
+
+            var signupOptions = new SignUpOptions
+            { 
+                Data = childData 
+            };
+
+            string randomEmail = $"foo-{RandomGenerator.GenerateRandomString(6)}@bar.com";
+            string randomPassword = $"{RandomGenerator.GenerateRandomString(6)}";
+
+            var session = await _supabaseClient.Auth.SignUp(randomEmail, randomPassword, signupOptions);
+            if ((session == null) || session.User != null && session.User.Identities != null && session.User.Identities.Count == 0)
+            {
+                throw new SignInFailedException("An error occurred while trying to sign up child user.");
+            }
+         
+            var result = new ChildRegistrationDataDTO()
+            {
+                InvitationCode = invitationCode,
+                TempPassword = randomPassword
+            };
+
+            return result;
+
+            
+
         }
     }
 }

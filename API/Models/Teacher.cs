@@ -7,7 +7,7 @@ namespace API.Models
     public class Teacher : BaseModel
     {
         [PrimaryKey("id")]
-        public int Id { get; set; }
+        public string Id { get; set; } = null!;
         [Column("name")]
         public string Name { get; set; } = null!;
         [Column("surname")]
@@ -18,6 +18,8 @@ namespace API.Models
         public DateTime BirthDate { get; set; }
         [Column("school")]
         public string School { get; set; } = null!;
+        [Column("profession")]
+        public string Profession { get; set; } = null!;
         [Column("email")]
         public  string Email { get; set; } = null!;
         [Column("profile_picture_url")]

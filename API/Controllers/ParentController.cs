@@ -1,5 +1,7 @@
-﻿using API.Extensions;
+﻿using API.Exceptions;
+using API.Extensions;
 using API.Models;
+using API.Models.DTOs.Child;
 using API.Models.DTOs.Parent;
 using API.Services.ParentService;
 using Microsoft.AspNetCore.Authorization;
@@ -26,19 +28,43 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult> SignUp(CreateParentDTO request)
         {
-           var session = await _parentService.SignUp(request);
-           if (session == null)
-           {
-                return BadRequest("An error occurred while trying to sign up.");
-           }
-
-            var result = session.MapSessionToUserDTO();
-            if (result == null)
+            try
             {
-                return BadRequest("An error occurred while trying to parse the information.");
+                var session = await _parentService.SignUp(request);
+                var result = session.MapSessionToUserDTO();
+                if (result == null)
+                {
+                    return StatusCode(500, "An error occurred while trying to parse the information.");
+                }
+                return Ok(result);
             }
-            
-           return Ok(result);
+            catch(SignInFailedException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+          
+        }
+
+        [HttpPost("addChild")]
+        [Authorize]
+        public async Task<ActionResult> RegisterChild(CreateInitialChildDTO request)
+        {
+            string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            try
+            {
+                var result = await _parentService.RegisterChild(request, userToken);
+                if (result == null || result.InvitationCode.Length == 0)
+                {
+                    return BadRequest("An error occurred while trying to generate invitation code.");
+                }
+                return Ok(result);
+            }
+            catch (SignInFailedException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+
         }
 
         [HttpPatch]
@@ -50,39 +76,14 @@ namespace API.Controllers
                 return BadRequest("An error occurred while trying to update the user.");
             }
 
-            
-
             return Ok(user);
         }
+
 
         [HttpGet]
         [Authorize(Policy = "RequireParentRole")]
         public ActionResult Get()
         {
-            //_logger.LogInformation("Authorization policy evaluation started.");
-            //// Access user_metadata from the ClaimsPrincipal (User)
-            //var userMetadataClaim = User.FindFirst("user_metadata");
-            //if (userMetadataClaim != null)
-            //{
-            //    // Deserialize user_metadata JSON string to an object
-            //    var userMetadata = JsonSerializer.Deserialize<UserMetadata>(userMetadataClaim.Value);
-
-            //    // Access role_id from the user_metadata object
-            //    var roleId = userMetadata?.role_id;
-
-            //    if (roleId != null)
-            //    {
-            //        _logger.LogInformation("Role ID claim: {roleId}", roleId);
-            //    }
-            //    else
-            //    {
-            //        _logger.LogInformation("Role ID claim is missing or null.");
-            //    }
-            //}
-            //else
-            //{
-            //    _logger.LogInformation("User metadata claim is missing.");
-            //}
             return Ok();
 
         }

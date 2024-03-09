@@ -16,20 +16,20 @@ namespace API.Extensions
             var name = "";
             if (user.UserMetadata.TryGetValue("name", out var nameObj))
             {
-                name = nameObj.ToString() ?? "";
+                name = nameObj.ToString();
             }
 
 
             var surname = "";
             if (user.UserMetadata.TryGetValue("surname", out var surnameObj))
             {
-                surname = surnameObj.ToString() ?? "";
+                surname = surnameObj.ToString();
             }
 
             string profilePictureUrl = "";
             if (user.UserMetadata.TryGetValue("profile_picture_url", out var profilePictureObj))
             {
-                profilePictureUrl = profilePictureObj.ToString() ?? "";
+                profilePictureUrl = profilePictureObj.ToString();
             }
             
             return new GetUserInformationDTO()
@@ -42,5 +42,29 @@ namespace API.Extensions
                 Email = user.Email ?? ""
             };
         }
+
+        public static GetChildInformationDTO? MapSessionToChildDTO(this Session session)
+        {
+            var user = session.User;
+            if (user == null)
+            {
+                return null;
+            }
+
+            var username = "";
+            if (user.UserMetadata.TryGetValue("username", out var usernameObj))
+            {
+                username = usernameObj.ToString();
+            }
+
+
+            return new GetChildInformationDTO()
+            {
+                Id = user.Id ?? "",
+                Token = session.AccessToken ?? "",
+                Username= username
+            };
+        }
+
     }
 }

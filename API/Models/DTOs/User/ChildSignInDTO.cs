@@ -1,4 +1,4 @@
-﻿namespace API.Models.DTOs.Child
+﻿namespace API.Models.DTOs.User
 {
     public class ChildSignInDTO
     {

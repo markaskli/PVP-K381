@@ -22,5 +22,6 @@ namespace API.Models
         public string ProfilePictureUrl { get; set; } = null!;
         [Column("role_id")]
         public int RoleId { get; set; } = 1;
+
     }
 }
