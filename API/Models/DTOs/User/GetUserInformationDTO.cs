@@ -8,6 +8,7 @@
         public required string Surname { get; set; }
         public required string Email { get; set; }
         public required string ProfilePictureUrl { get; set; }
+        public int RoleId { get; set; }
         
 
 

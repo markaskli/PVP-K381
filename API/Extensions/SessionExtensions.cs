@@ -1,4 +1,5 @@
-﻿using API.Models.DTOs.User;
+﻿using API.Exceptions;
+using API.Models.DTOs.User;
 using Supabase.Gotrue;
 
 namespace API.Extensions
@@ -31,6 +32,17 @@ namespace API.Extensions
             {
                 profilePictureUrl = profilePictureObj.ToString();
             }
+
+            int roleId = 0;
+            if (user.UserMetadata.TryGetValue("role_id", out var roleIdObj))
+            {
+                roleId = (int)(long)roleIdObj;
+            }
+
+            if (roleId == 0)
+            {
+                return null;
+            }
             
             return new GetUserInformationDTO()
             {
@@ -39,6 +51,7 @@ namespace API.Extensions
                 Name = name,
                 Surname = surname,
                 ProfilePictureUrl = profilePictureUrl,
+                RoleId = roleId,
                 Email = user.Email ?? ""
             };
         }
@@ -57,12 +70,24 @@ namespace API.Extensions
                 username = usernameObj.ToString();
             }
 
+            int roleId = 0;
+            if (user.UserMetadata.TryGetValue("role_id", out var roleIdObj))
+            {
+                roleId = (int)(long)roleIdObj;
+            }
+
+            if (roleId == 0)
+            {
+                return null;
+            }
+
 
             return new GetChildInformationDTO()
             {
                 Id = user.Id ?? "",
                 Token = session.AccessToken ?? "",
-                Username= username
+                Username= username,
+                RoleId = roleId
             };
         }
 
