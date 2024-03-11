@@ -65,7 +65,7 @@ namespace API.Services.ParentService
 
         }
 
-        public async Task<ChildRegistrationDataDTO> RegisterChild(CreateInitialChildDTO request, string requestToken)
+        public async Task<ChildRegistrationDataDTO?> RegisterChild(CreateInitialChildDTO request, string requestToken)
         {
             string invitationCode = string.Empty;
 
@@ -76,6 +76,7 @@ namespace API.Services.ParentService
             if (existingCodes != null && existingCodes.Content != null)
             {
                 var existingInvitationCodes = JArray.Parse(existingCodes.Content);
+                invitationCode = RandomGenerator.GenerateRandomString(6);
                 bool codeExists = existingInvitationCodes.Any(x => x["invitation_code"]?.ToString() == invitationCode);
                 while (codeExists)
                 {
@@ -89,11 +90,19 @@ namespace API.Services.ParentService
                 invitationCode = RandomGenerator.GenerateRandomString(6);
             }
 
+            if (invitationCode.Length == 0)
+            {
+                return null;
+            }
+
+
             var parent = await _supabaseClient.Auth.GetUser(requestToken);
             if (parent == null)
             {
-                throw new Exception("An error occurred while trying to get the information of current user.");
+                throw new ArgumentException("An error occurred while trying to get the information of current user.");
             }
+
+            
 
             var childData = new Dictionary<string, object>
             {

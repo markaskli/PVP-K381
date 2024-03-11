@@ -53,7 +53,7 @@ namespace API.Controllers
             try
             {
                 var result = await _parentService.RegisterChild(request, userToken);
-                if (result == null || result.InvitationCode.Length == 0)
+                if (result == null)
                 {
                     return BadRequest("An error occurred while trying to generate invitation code.");
                 }

@@ -6,7 +6,7 @@ namespace API.Services.ParentService
 {
     public interface IParentService
     {
-        Task<ChildRegistrationDataDTO> RegisterChild(CreateInitialChildDTO request, string requestToken);
+        Task<ChildRegistrationDataDTO?> RegisterChild(CreateInitialChildDTO request, string requestToken);
         Task<Session> SignUp(CreateParentDTO request);
         Task<User> UpdateParentInformation(UpdateParentDTO request);
     }
