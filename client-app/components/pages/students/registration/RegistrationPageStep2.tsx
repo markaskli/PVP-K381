@@ -15,7 +15,6 @@ export const RegistrationPageStep2: React.FC = () => {
 
   const handleButtonPress = () => {
     // Handle button press action here
-    console.log("Button pressed");
   };
 
   return (
