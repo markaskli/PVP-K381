@@ -1,34 +1,138 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { BaseInput } from "../../input/BaseInput";
 import { PRIMARY_COLOR } from "../../../utils/constants";
-import { BasePage } from "../../base-page/basePage";
 import { FormPage } from "../../base-page/FormPage";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ParentSignUpField,
+  defaultParentSignUpFormValues,
+  signUpFormSchema,
+} from "./modelSignUp";
+import { BaseTextField } from "../../input/BaseTextField";
+import { BaseDatePicker } from "../../input/BaseDatePicker";
+import { styled } from "nativewind";
+import { useRegisterParent } from "./authenticationQueries";
+import cookie from "cookiejs";
+
+const StyledView = styled(View);
 
 export const ParentsSignUpPage: React.FC<{ navigation: any }> = ({
   navigation,
 }) => {
-  const handleButtonPress = () => {
-    // Handle button press action here
-    navigation.navigate("ChildInsertionPage");
+  const registerParent = useRegisterParent();
+  const methods = useForm({
+    resolver: zodResolver(signUpFormSchema),
+    defaultValues: defaultParentSignUpFormValues,
+    reValidateMode: "onSubmit",
+    mode: "all",
+  });
+
+  const {
+    handleSubmit,
+    control,
+    getValues,
+    formState: { errors },
+  } = methods;
+
+  // const handleButtonPress = () => {
+  //   // Handle button press action here
+  //   navigation.navigate("ChildInsertionPage");
+  // };
+
+  const submitForm = () => {
+    const values = getValues();
+    const { repeatPassword, ...form } = signUpFormSchema.parse(values);
+
+    registerParent.mutate(
+      {
+        userInformation: form,
+      },
+      {
+        onSuccess: (res) => {
+          cookie("token", res.token, 1);
+          navigation.navigate("ChildInsertionPage");
+        },
+      }
+    );
   };
+
   return (
     <FormPage title={"Registracija"}>
-      <View style={styles.inlineWrapper}>
-        <BaseInput label={"Vardas"} />
-        <BaseInput label={"Pavardė"} />
-      </View>
+      <form
+        onSubmit={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          handleSubmit(submitForm);
+        }}
+        noValidate
+      >
+        <FormProvider {...methods}>
+          <View style={styles.inlineWrapper}>
+            <BaseTextField
+              control={control}
+              formField={ParentSignUpField.NAME}
+              label={"Vardas"}
+              errorMessage={errors.name?.message}
+            />
+            <BaseTextField
+              control={control}
+              formField={ParentSignUpField.SURNAME}
+              label={"Pavardė"}
+              errorMessage={errors.surname?.message}
+            />
+          </View>
 
-      <View style={styles.inlineWrapper}>
-        <BaseInput label='El. paštas' />
-        <BaseInput label='Telefono numeris' />
-      </View>
-      <BaseInput label={"Gimimo data"} />
-      <BaseInput label={"Slaptažodis"} />
-      <BaseInput label={"Pakartokite slaptažodį"} />
-      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-        <Text style={styles.buttonText}>Registruotis</Text>
-      </TouchableOpacity>
+          <View style={styles.inlineWrapper}>
+            <BaseTextField
+              control={control}
+              formField={ParentSignUpField.EMAIL}
+              label={"El. paštas"}
+              errorMessage={errors.email?.message}
+            />
+            <BaseTextField
+              control={control}
+              formField={ParentSignUpField.PHONE_NUMBER}
+              label={"Telefono numeris"}
+              errorMessage={errors.phoneNumber?.message}
+            />
+          </View>
+          <StyledView className='mb-4'>
+            <BaseDatePicker
+              formField={ParentSignUpField.BIRTH_DATE}
+              control={control}
+              format='yyyy-MM-dd'
+              className='mb-4'
+              label={"Gimimo data"}
+              errorMessage={errors.birthDate?.message}
+            />
+          </StyledView>
+          <StyledView className='mb-4'>
+            <BaseTextField
+              control={control}
+              type='password'
+              formField={ParentSignUpField.PASSWORD}
+              label={"Slaptažodis"}
+              errorMessage={errors.password?.message}
+            />
+          </StyledView>
+          <StyledView className='mb-4'>
+            <BaseTextField
+              control={control}
+              type='password'
+              formField={ParentSignUpField.REPEAT_PASSWORD}
+              label={"Pakartokite slaptažodį"}
+              errorMessage={errors.repeatPassword?.message}
+            />
+          </StyledView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit(submitForm)}
+          >
+            <Text style={styles.buttonText}>Registruotis</Text>
+          </TouchableOpacity>
+        </FormProvider>
+      </form>
     </FormPage>
   );
 };
@@ -50,6 +154,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     gap: 20,
+    marginBottom: 20,
   },
   button: {
     backgroundColor: PRIMARY_COLOR,

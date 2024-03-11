@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
 import { PRIMARY_COLOR } from "../../../utils/constants";
-import { BasePage } from "../../base-page/basePage";
 import {
   AuthenticationActionTypes,
   useAppContext,
 } from "../../../contexts/appContext";
+import { BasePage } from "../../base-page/BasePage";
 
 export const AuthenticationPage: React.FC<{ navigation: any }> = ({
   navigation,
