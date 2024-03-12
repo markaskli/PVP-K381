@@ -3,6 +3,7 @@ using API.Extensions;
 using API.Models.DTOs.Child;
 using API.Services.ChildService;
 using Microsoft.AspNetCore.Mvc;
+using Supabase.Gotrue.Exceptions;
 
 namespace API.Controllers
 {
@@ -34,7 +35,7 @@ namespace API.Controllers
             }
             catch(Exception ex)
             {
-                if (ex is ArgumentException || ex is SignInFailedException)
+                if (ex is ArgumentException || ex is SignInFailedException || ex is GotrueException)
                 {
                     return BadRequest(ex.Message);
                 }
@@ -42,6 +43,7 @@ namespace API.Controllers
                 throw;
 
             }
+
 
 
         }

@@ -3,6 +3,7 @@ using API.Models;
 using API.Models.DTOs.User;
 using Microsoft.AspNetCore.Identity;
 using Supabase.Gotrue;
+using Supabase.Gotrue.Exceptions;
 
 namespace API.Services.UserService
 {
@@ -36,7 +37,7 @@ namespace API.Services.UserService
                 throw new ArgumentException("User with specified username doesn't exist.");
             }
 
-            var session = await _supabaseClient.Auth.SignIn(child.Email, request.Password);
+            Session session = await _supabaseClient.Auth.SignIn(child.Email, request.Password);
             if ((session == null) || session.User != null && session.User.Identities != null && session.User.Identities.Count == 0)
             {
                 throw new SignInFailedException("An error occurred while trying to sign in.");

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Supabase;
 using Supabase.Gotrue;
+using Supabase.Gotrue.Exceptions;
 using System.Text.Json;
 
 namespace API.Controllers
@@ -42,7 +43,11 @@ namespace API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-          
+            catch (GotrueException)
+            {
+                return BadRequest();
+            }
+
         }
 
         [HttpPost("addChild")]
@@ -66,6 +71,10 @@ namespace API.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (GotrueException)
+            {
+                return BadRequest();
             }
 
 
