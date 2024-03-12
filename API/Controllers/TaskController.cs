@@ -3,6 +3,7 @@ using API.Models.DTOs.Task;
 using API.Services.TaskService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Postgrest.Exceptions;
 using Supabase.Interfaces;
 
 namespace API.Controllers
@@ -95,11 +96,15 @@ namespace API.Controllers
                     return Ok();
                 }
                 return NotFound();
-                
+
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (PostgrestException ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
 
