@@ -1,43 +1,150 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { BaseInput } from "../../input/BaseInput";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { PRIMARY_COLOR } from "../../../utils/constants";
-import { BasePage } from "../../base-page/basePage";
 import { FormPage } from "../../base-page/FormPage";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import cookie from "cookiejs";
+import { styled } from "nativewind";
+import {
+  TeacherSignUpField,
+  defaultTeacherSignUpFormValues,
+  signUpFormSchema,
+} from "./modelSignUp";
+import { useRegisterTeaher } from "./authenticationQueries";
+import { BaseTextField } from "../../input/BaseTextField";
+import { BaseDatePicker } from "../../input/BaseDatePicker";
+
+const StyledView = styled(View);
 
 export const TeachersSignUpPage: React.FC<{ navigation: any }> = ({
   navigation,
 }) => {
-  const handleButtonPress = () => {
-    // Handle button press action here
-    navigation.navigate("StudentRegistrationStep2");
+  const methods = useForm({
+    resolver: zodResolver(signUpFormSchema),
+    defaultValues: defaultTeacherSignUpFormValues,
+    reValidateMode: "onSubmit",
+    mode: "all",
+  });
+
+  const registerTeacher = useRegisterTeaher();
+
+  const {
+    handleSubmit,
+    control,
+    getValues,
+    formState: { errors },
+  } = methods;
+
+  const submitForm = () => {
+    const values = getValues();
+    const { repeatPassword, ...form } = signUpFormSchema.parse(values);
+
+    registerTeacher.mutate(
+      {
+        userInformation: form,
+      },
+      {
+        onSuccess: (res) => {
+          cookie("token", res.token, 1);
+        },
+      }
+    );
   };
   return (
     <FormPage title='Registracija'>
-      <View style={styles.middleContainer}>
-        <Text style={styles.title}>Registracija</Text>
-      </View>
-      <View style={styles.inlineWrapper}>
-        <BaseInput label={"Vardas"} />
-        <BaseInput label={"Pavardė"} />
-      </View>
-      <BaseInput label='El. paštas' />
-      <BaseInput label='Telefono numeris' />
-      <View style={styles.inlineWrapper}>
-        <BaseInput label={"Gimimo data"} />
-        <BaseInput label={"Mokykla"} />
-      </View>
-      <BaseInput label={"Slaptažodis"} />
-      <BaseInput label={"Pakartokite slaptažodį"} />
-      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-        <Text style={styles.buttonText}>Registruotis</Text>
-      </TouchableOpacity>
+      <form
+        onSubmit={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          handleSubmit(submitForm);
+        }}
+        noValidate
+      >
+        <FormProvider {...methods}>
+          <View style={styles.middleContainer}>
+            <Text style={styles.title}>Registracija</Text>
+          </View>
+          <View style={styles.inlineWrapper}>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={TeacherSignUpField.NAME}
+                label={"Vardas"}
+                errorMessage={errors.name?.message}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={TeacherSignUpField.SURNAME}
+                label={"Pavardė"}
+                errorMessage={errors.surname?.message}
+              />
+            </StyledView>
+          </View>
+          <StyledView className='mb-4'>
+            <BaseTextField
+              control={control}
+              formField={TeacherSignUpField.EMAIL}
+              label={"El. pašas"}
+              errorMessage={errors.email?.message}
+            />
+          </StyledView>
+          <StyledView className='mb-4'>
+            <BaseTextField
+              control={control}
+              formField={TeacherSignUpField.PHONE_NUMBER}
+              label={"Telefono numeris"}
+              errorMessage={errors.phoneNumber?.message}
+            />
+          </StyledView>
+          <View style={styles.inlineWrapper}>
+            <StyledView className='mb-4'>
+              <BaseDatePicker
+                formField={TeacherSignUpField.BIRTH_DATE}
+                control={control}
+                format='yyyy-MM-dd'
+                className='mb-4'
+                label={"Gimimo data"}
+                errorMessage={errors.birthDate?.message}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={TeacherSignUpField.SCHOOL}
+                label={"Mokykla"}
+                errorMessage={errors.school?.message}
+              />
+            </StyledView>
+          </View>
+          <StyledView className='mb-4'>
+            <BaseTextField
+              control={control}
+              formField={TeacherSignUpField.PASSWORD}
+              label={"Slaptažodis"}
+              type='password'
+              errorMessage={errors.password?.message}
+            />
+          </StyledView>
+          <StyledView className='mb-4'>
+            <BaseTextField
+              control={control}
+              formField={TeacherSignUpField.REPEAT_PASSWORD}
+              label={"Pakartokite slaptažodį"}
+              type='password'
+              errorMessage={errors.repeatPassword?.message}
+            />
+          </StyledView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit(submitForm)}
+          >
+            <Text style={styles.buttonText}>Registruotis</Text>
+          </TouchableOpacity>
+        </FormProvider>
+      </form>
     </FormPage>
   );
 };

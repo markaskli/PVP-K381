@@ -1,12 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { BasePage } from "../../base-page/basePage";
 import {
   AuthenticationActionTypes,
   useAppContext,
 } from "../../../contexts/appContext";
 import { Role } from "../../types/types";
 import { pagesNaming } from "./pageNavigation";
+import { BasePage } from "../../base-page/BasePage";
 
 export const RoleSelectionPage: React.FC<{ navigation: any }> = ({
   navigation,

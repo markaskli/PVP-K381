@@ -1,26 +1,93 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { BaseInput } from "../../input/BaseInput";
 import { ACCENT_COLOR } from "../../../utils/constants";
-import { BasePage } from "../../base-page/basePage";
 import { FormPage } from "../../base-page/FormPage";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ParentSignInField,
+  defaultParentSignInFormValues,
+  signInFormSchema,
+} from "./modelSignIn";
+import { BaseTextField } from "../../input/BaseTextField";
+import { styled } from "nativewind";
+import { useLoginParentOrTeacher } from "./authenticationQueries";
+import cookie from "cookiejs";
+
+const StyledView = styled(View);
 
 export const ParentsSignInPage: React.FC<{ navigation: any }> = ({
   navigation,
 }) => {
-  const handleButtonPress = () => {
-    // Handle button press action here
-    navigation.navigate("StudentRegistrationStep2");
+  const methods = useForm({
+    resolver: zodResolver(signInFormSchema),
+    defaultValues: defaultParentSignInFormValues,
+    reValidateMode: "onSubmit",
+    mode: "all",
+  });
+
+  const loginParent = useLoginParentOrTeacher();
+
+  const {
+    handleSubmit,
+    control,
+    getValues,
+    formState: { errors },
+  } = methods;
+
+  const submitForm = () => {
+    const values = getValues();
+    const form = signInFormSchema.parse(values);
+
+    loginParent.mutate(
+      {
+        userInformation: form,
+      },
+      {
+        onSuccess: (res) => {
+          cookie("token", res.token, 1);
+        },
+      }
+    );
   };
   return (
     <FormPage title='Prisijungimas'>
-      <View style={styles.inputsContainer}>
-        <BaseInput label='El. paštas' />
-        <BaseInput label={"Slaptažodis"} />
-      </View>
-      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-        <Text style={styles.buttonText}>Prisijungti</Text>
-      </TouchableOpacity>
+      <form
+        onSubmit={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          handleSubmit(submitForm);
+        }}
+        noValidate
+      >
+        <FormProvider {...methods}>
+          <View style={styles.inputsContainer}>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={ParentSignInField.EMAIL}
+                label={"El. paštas"}
+                errorMessage={errors.email?.message}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={ParentSignInField.PASSWORD}
+                type='password'
+                label={"Slaptažodis"}
+                errorMessage={errors.password?.message}
+              />
+            </StyledView>
+          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit(submitForm)}
+          >
+            <Text style={styles.buttonText}>Prisijungti</Text>
+          </TouchableOpacity>
+        </FormProvider>
+      </form>
     </FormPage>
   );
 };
