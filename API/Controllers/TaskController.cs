@@ -46,12 +46,12 @@ namespace API.Controllers
             }         
         }
 
-        [HttpGet("parentId")]
-        public async Task<ActionResult> GetByParentId(string parentId)
+        [HttpGet("userId")]
+        public async Task<ActionResult> GetByParentId(string userId)
         {
             try
             {
-                var task = await _taskService.GetTasksByParentAsync(parentId);
+                var task = await _taskService.GetTasksByParentAsync(userId);
                 return Ok(task);
             }
             catch (KeyNotFoundException ex)
