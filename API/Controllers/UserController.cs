@@ -3,6 +3,8 @@ using API.Extensions;
 using API.Models.DTOs.User;
 using API.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Supabase.Gotrue.Exceptions;
 
 namespace API.Controllers
 {
@@ -35,6 +37,10 @@ namespace API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+            catch (GotrueException)
+            {
+                return BadRequest();
+            }
 
         }
 
@@ -58,8 +64,11 @@ namespace API.Controllers
             catch(SignInFailedException ex)
             {
                 return StatusCode(500, ex.Message);
-            }         
-            
+            }
+            catch (GotrueException)
+            {
+                return BadRequest();
+            }
         }
     }
 }
