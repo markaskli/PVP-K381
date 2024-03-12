@@ -94,7 +94,7 @@ namespace API.Controllers
                 {
                     return Ok();
                 }
-                return StatusCode(500);
+                return NotFound();
                 
             }
             catch (ArgumentException ex)

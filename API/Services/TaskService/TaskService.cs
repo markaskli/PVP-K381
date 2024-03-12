@@ -112,9 +112,17 @@ namespace API.Services.TaskService
                 throw new ArgumentException($"Provided task id is not valid.");
             }
 
-            await _supabaseClient.From<Task>()
+            var task = await _supabaseClient.From<Task>()
                 .Where(x => x.Id == taskId)
-                .Delete();
+                .Single();
+
+            if (task == null)
+            {
+                return false;
+            }
+
+            await task.Delete<Task>();
+
             return true;         
         }
 
