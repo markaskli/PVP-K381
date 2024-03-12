@@ -63,6 +63,10 @@ namespace API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
 
         }

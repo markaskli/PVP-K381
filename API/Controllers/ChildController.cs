@@ -12,6 +12,7 @@ namespace API.Controllers
     {
         private readonly IChildService _childService;
 
+
         public ChildController(IChildService childService)
         {
             _childService = childService;
@@ -31,10 +32,17 @@ namespace API.Controllers
                 return Ok(result);
 
             }
-            catch (SignInFailedException ex)
+            catch(Exception ex)
             {
-                return BadRequest(ex.Message);
-            }          
+                if (ex is ArgumentException || ex is SignInFailedException)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+                throw;
+
+            }
+
 
         }
     }

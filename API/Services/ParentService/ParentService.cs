@@ -69,6 +69,14 @@ namespace API.Services.ParentService
         {
             string invitationCode = string.Empty;
 
+            var formattedName = request.Name.Trim();
+            var formattedClass = request.Class.Trim();
+
+            if (formattedClass.Length == 0 || formattedName.Length == 0)
+            {
+                throw new ArgumentException("Provided information is not of valid format.");
+            }
+
             var existingCodes = await _supabaseClient.From<Child>()
                 .Select(x => new object[] { x.InvitationCode })
                 .Get();
