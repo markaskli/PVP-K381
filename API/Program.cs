@@ -20,7 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<Supabase.Client>(_ =>
+builder.Services.AddSingleton<Supabase.Client>(_ =>
     new Supabase.Client(
         builder.Configuration["Supabase:SupabaseUrl"],
         builder.Configuration["Supabase:SupabaseKey"],
