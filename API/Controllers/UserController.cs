@@ -41,7 +41,8 @@ namespace API.Controllers
             }
             catch (GotrueException ex )
             {
-                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+                dynamic deserializedObject = JsonConvert.DeserializeObject(ex.Message);
+                return BadRequest(new ProblemDetails() { Title = deserializedObject.error, Detail = deserializedObject.error_description });
             }
 
         }
@@ -69,7 +70,8 @@ namespace API.Controllers
             }
             catch (GotrueException ex)
             {
-                return BadRequest(new ProblemDetails() { Detail = ex.Message});
+                dynamic deserializedObject = JsonConvert.DeserializeObject(ex.Message);
+                return BadRequest(new ProblemDetails() { Title = deserializedObject.error, Detail = deserializedObject.error_description });
             }
         }
 
