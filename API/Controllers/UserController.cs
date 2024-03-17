@@ -2,8 +2,10 @@
 using API.Extensions;
 using API.Models.DTOs.User;
 using API.Services.UserService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Postgrest.Exceptions;
 using Supabase.Gotrue.Exceptions;
 
 namespace API.Controllers
@@ -37,9 +39,10 @@ namespace API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-            catch (GotrueException)
+            catch (GotrueException ex )
             {
-                return BadRequest();
+                dynamic deserializedObject = JsonConvert.DeserializeObject(ex.Message);
+                return BadRequest(new ProblemDetails() { Title = deserializedObject.error, Detail = deserializedObject.error_description });
             }
 
         }
@@ -59,16 +62,69 @@ namespace API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }
             catch(SignInFailedException ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            catch (GotrueException)
+            catch (GotrueException ex)
             {
-                return BadRequest();
+                dynamic deserializedObject = JsonConvert.DeserializeObject(ex.Message);
+                return BadRequest(new ProblemDetails() { Title = deserializedObject.error, Detail = deserializedObject.error_description });
             }
+        }
+
+        [HttpPatch("changeEmail")]
+        [Authorize]
+        public async Task<ActionResult> ChangeUsersEmail(string newEmailAddress)
+        {
+            try
+            {             
+                var result = await _userService.ChangeEmailAsync(newEmailAddress);
+                if (!result)
+                {
+                    return StatusCode(500);
+                }
+                return Ok();
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Invalid email address."});
+            }
+            catch (GotrueException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message});
+            }
+        }
+
+        [HttpPatch("changePassword")]
+        [Authorize]
+        public async Task<ActionResult> ChangeUserPassword(ChangeUserPasswordDTO request)
+        {
+            var message = await _userService.ChangePasswordAsync(request);
+            if (string.IsNullOrEmpty(message))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(new ProblemDetails() { Detail = message});
+            }
+
+            
+
+        }
+
+        [HttpPost("signOut")]
+        public async Task<ActionResult> SignOutUser()
+        {
+            var result = await _userService.SignOutAsync();
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest(new ProblemDetails() { Detail = "The user is not logged-in." });
         }
     }
 }
