@@ -78,7 +78,7 @@ namespace API.Services.TaskService
                 throw new FormatException("The provided date was in an incorrect format.");
             }
 
-            if (requestDueDate < DateTime.Now)
+            if (requestDueDate.Date < DateTime.Now.Date)
             {
                 throw new ArgumentException("Invalid value of due date provided.");
             }

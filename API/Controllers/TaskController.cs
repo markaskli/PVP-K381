@@ -29,7 +29,7 @@ namespace API.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new ProblemDetails() { Detail = ex.Message });
             }
         }
 
@@ -43,7 +43,7 @@ namespace API.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new ProblemDetails() { Detail = ex.Message });
             }         
         }
 
@@ -57,7 +57,7 @@ namespace API.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new ProblemDetails() { Detail = ex.Message });
             }
         }
 
@@ -77,11 +77,11 @@ namespace API.Controllers
             }
             catch (FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }         
         }
 
@@ -100,7 +100,7 @@ namespace API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }
             catch (PostgrestException ex)
             {
@@ -122,11 +122,11 @@ namespace API.Controllers
             }
             catch (FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }
 
         }
