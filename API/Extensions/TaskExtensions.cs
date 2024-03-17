@@ -14,7 +14,8 @@ namespace API.Extensions
                 Name = task.Name,
                 Description = task.Description,
                 Points = task.Points,
-                IsFinished = task.IsFinished,
+                IsConfirmedByChild = task.IsConfirmedByChild,
+                IsConfirmedByParent = task.IsConfirmedByUser,
                 DueDate = task.DueDate.ToString("yyyy/mm/dd"),
                 AssignedToId = task.AssignedToId,
                 CreatedById = task.CreatedById
