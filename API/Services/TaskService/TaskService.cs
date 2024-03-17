@@ -89,7 +89,8 @@ namespace API.Services.TaskService
                 Description = request.Description,
                 CreatedAt = DateTime.Now,
                 Points = request.Points,
-                IsFinished = false,
+                IsConfirmedByChild = false,
+                IsConfirmedByUser = false,
                 DueDate = requestDueDate,
                 CreatedById = creator.Id,
                 AssignedToId = request.AssignedToId
@@ -202,9 +203,14 @@ namespace API.Services.TaskService
                 }
             }
 
-            if (request.IsFinished != null)
+            if (request.IsConfirmedByChild != null)
             {
-                task.IsFinished = request.IsFinished.Value;
+                task.IsConfirmedByChild = request.IsConfirmedByChild.Value;
+            }
+
+            if (request.IsConfirmedByUser != null)
+            {
+                task.IsConfirmedByUser = request.IsConfirmedByUser.Value;
             }
 
             var result = await task.Update<Task>();

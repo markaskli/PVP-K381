@@ -16,8 +16,10 @@ namespace API.Models
         public string Description { get; set; } = null!;
         [Column("points")]
         public int Points { get; set; }
-        [Column("is_finished")]
-        public bool IsFinished { get; set; }
+        [Column("is_confirmed_by_child")]
+        public bool IsConfirmedByChild { get; set; }
+        [Column("is_confirmed_by_user")]
+        public bool IsConfirmedByUser { get; set; }
         [Column("due_date")]
         public DateTime DueDate { get; set; }
         [Column("created_by_id")]

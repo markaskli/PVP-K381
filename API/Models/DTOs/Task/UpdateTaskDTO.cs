@@ -8,6 +8,7 @@
         public int? Points { get; set; }
         public string? DueDate { get; set; }
         public string? AssignedToId { get; set; } 
-        public bool? IsFinished { get; set; }
+        public bool? IsConfirmedByChild { get; set; }
+        public bool? IsConfirmedByUser { get; set; }
     }
 }
