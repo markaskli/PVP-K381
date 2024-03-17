@@ -116,7 +116,7 @@ namespace API.Controllers
 
         }
 
-        [HttpGet]
+        [HttpPost("signOut")]
         public async Task<ActionResult> SignOutUser()
         {
             var result = await _userService.SignOutAsync();
