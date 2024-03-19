@@ -87,7 +87,7 @@ export const TeachersSignUpPage: React.FC<{ navigation: any }> = ({
             <BaseTextField
               control={control}
               formField={TeacherSignUpField.EMAIL}
-              label={"El. pašas"}
+              label={"El. paštas"}
               errorMessage={errors.email?.message}
             />
           </StyledView>
