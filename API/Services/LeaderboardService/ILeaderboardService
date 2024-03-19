@@ -1,0 +1,9 @@
+using API.Models.DTOs.Leaderboard;
+
+namespace API.Services.TaskService
+{
+    public interface ILeaderboardServiceService
+    {
+        Task<GetTaskDTO> GetLeaderboardByIdAsync(int id);
+    }
+}
