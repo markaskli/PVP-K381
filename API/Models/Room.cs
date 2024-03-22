@@ -7,9 +7,16 @@ namespace API.Models
     public class Room : BaseModel
     {
         [PrimaryKey("id")]
-        public int Id { get; set; }
-        public Parent? Parent { get; set; }
-        public Teacher? Teacher { get; set; }
-        public List<Child> Children { get; set; } = new List<Child>();
+        public string Id { get; set; } = null!;
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+        [Column("invitation_code")]
+        public string InvitationCode { get; set; } = null!;
+        [Column("created_by_id")]
+        public string CreatedById { get; set; } = null!;
+        [Reference(typeof(Child), useInnerJoin: false)]
+        public List<Child> Children { get; set; } = new();
+        [Reference(typeof(Task), useInnerJoin: false)]
+        public List<Task> Tasks { get; set; } = new();
     }
 }

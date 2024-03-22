@@ -11,6 +11,8 @@
         public bool IsConfirmedByParent { get; set; }
         public required string DueDate { get; set; }
         public required string CreatedById { get; set; }
-        public required string AssignedToId { get; set; }
+        public string? AssignedToChildId { get; set; }
+        public string? AssignedToRoomId { get; set; }
+
     }
 }

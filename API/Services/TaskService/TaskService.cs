@@ -2,7 +2,9 @@
 using API.Models;
 using API.Models.DTOs.Task;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Supabase;
+using System.IdentityModel.Tokens.Jwt;
 using Task = API.Models.Task;
 
 namespace API.Services.TaskService
@@ -33,41 +35,56 @@ namespace API.Services.TaskService
 
         public async Task<List<GetTaskDTO>> GetTasksOfChildAsync(string childId)
         {
-            var tasks = await _supabaseClient.From<Task>()
-                .Where(x => x.AssignedToId == childId)
-                .Get();
-
-            if (tasks.Models.IsNullOrEmpty())
+            var childParams = new Dictionary<string, object>()
             {
-                throw new KeyNotFoundException($"No tasks were found for child with id {childId}.");
+                { "childid", childId },
+            };
+
+            var result = await _supabaseClient.Rpc("get_tasks_for_child", childParams);
+            if (result.Content == null)
+            {
+                throw new KeyNotFoundException($"No tasks were found for child with Id {childId}.");
             }
 
-            return tasks.Models.Select(task => task.MapTaskToDTO()).ToList();
+            List<Task> tasks = JsonConvert.DeserializeObject<List<Task>>(result.Content);
+            return tasks.Select(task => task.MapTaskToDTO()).ToList();
         }
 
-        public async Task<List<GetTaskDTO>> GetTasksByParentAsync(string parentId)
+        public async Task<List<GetTaskDTO>> GetTasksByCreatorAsync(string userId)
         {
-            var tasks = await _supabaseClient.From<Task>()
-                .Where(x => x.CreatedById == parentId)
-                .Get();
-
-            if (tasks.Models.IsNullOrEmpty())
+            var userParams = new Dictionary<string, object>()
             {
-                throw new KeyNotFoundException($"No tasks were submitted by parent with id {parentId}.");
+                { "userid", userId },
+            };
+
+            var result = await _supabaseClient.Rpc("get_tasks_for_creator", userParams);
+            if (result.Content == null)
+            {
+                throw new KeyNotFoundException($"No tasks were submitted by parent with Id {userId}.");
             }
 
-            return tasks.Models.Select(task => task.MapTaskToDTO()).ToList();
+            List<Task> tasks = JsonConvert.DeserializeObject<List<Task>>(result.Content);
+
+
+            return tasks.Select(task => task.MapTaskToDTO()).ToList();
         }
 
-        public async Task<GetTaskDTO?> CreateTaskAsync(CreateTaskDTO request, string creatorToken)
+        public async Task<GetTaskDTO?> CreateTaskForChildAsync(CreateTaskDTO request, string creatorToken)
         {
+            if (request.AssignedToId == null)
+            {
+                throw new ArgumentNullException("Child Id cannot be null.");
+            }
+
             if (request.Points <= 0)
             {
                 throw new ArgumentException("Amount of points can not be lower or equal to 0.");
             }
 
-            var creator = await _supabaseClient.Auth.GetUser(creatorToken);
-            if (creator == null)
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtTokenObject = tokenHandler.ReadJwtToken(creatorToken);
+            var creatorId = jwtTokenObject.Subject;
+            if (creatorId == null)
             {
                 throw new ArgumentException("An error occurred while trying to get the information of current user.");
             }
@@ -92,8 +109,9 @@ namespace API.Services.TaskService
                 IsConfirmedByChild = false,
                 IsConfirmedByUser = false,
                 DueDate = requestDueDate,
-                CreatedById = creator.Id,
-                AssignedToId = request.AssignedToId
+                CreatedById = creatorId,
+                AssignedToChildId = request.AssignedToId,
+                AssignedToRoom = null
             };
 
             var result = await _supabaseClient.From<Task>().Insert(createdTask);
@@ -103,6 +121,71 @@ namespace API.Services.TaskService
             }
 
             return null;
+
+        }
+
+        public async Task<GetTaskDTO?> CreateTaskForRoomAsync(CreateTaskDTO request, string creatorToken)
+        {
+            if (request.AssignToRoomId == null)
+            {
+                throw new ArgumentException("Room Id cannot be null.");
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtTokenObject = tokenHandler.ReadJwtToken(creatorToken);
+            var creatorId = jwtTokenObject.Subject;
+            if (creatorId == null)
+            {
+                throw new ArgumentException("An error occurred while trying to get the information of current user.");
+            }
+
+            var room = await _supabaseClient.From<Room>()
+                .Where(r => r.Id == request.AssignToRoomId)
+                .Single();
+
+            if (room == null)
+            {
+                throw new KeyNotFoundException("Room with specified Id does not exist");
+            }
+
+            if (request.Points <= 0)
+            {
+                throw new ArgumentException("Amount of points can not be lower or equal to 0.");
+            }         
+
+            DateTime requestDueDate;
+            if (!DateTime.TryParse(request.DueDate, out requestDueDate))
+            {
+                throw new FormatException("The provided date was in an incorrect format.");
+            }
+
+            if (requestDueDate.Date < DateTime.Now.Date)
+            {
+                throw new ArgumentException("Invalid value of due date provided.");
+            }
+
+            var createdTask = new Task()
+            {
+                Name = request.Name,
+                Description = request.Description,
+                CreatedAt = DateTime.Now,
+                Points = request.Points,
+                IsConfirmedByChild = false,
+                IsConfirmedByUser = false,
+                DueDate = requestDueDate,
+                CreatedById = creatorId,
+                AssignedToChildId = null,
+                AssignedToRoom = room.Id
+            };
+
+            var result = await _supabaseClient.From<Task>().Insert(createdTask);
+            if (result != null && result.ResponseMessage.IsSuccessStatusCode)
+            {
+                return result.Model.MapTaskToDTO();
+            }
+
+            return null;
+
 
         }
 
@@ -191,18 +274,6 @@ namespace API.Services.TaskService
                 
             }
 
-            if (request.AssignedToId != null)
-            {
-                if (request.AssignedToId.Length > 0)
-                {
-                    task.AssignedToId = request.AssignedToId.Trim();
-                }
-                else
-                {
-                    throw new ArgumentException("Not valid Id value");
-                }
-            }
-
             if (request.IsConfirmedByChild != null)
             {
                 task.IsConfirmedByChild = request.IsConfirmedByChild.Value;
@@ -217,6 +288,38 @@ namespace API.Services.TaskService
             if (result != null && result.ResponseMessage.IsSuccessStatusCode)
             {
                 return task.MapTaskToDTO();
+            }
+
+            return null;
+        }
+
+        public async Task<GetTaskDTO?> UpdateTaskStatusCreator(int taskId)
+        {
+            var response = await _supabaseClient.From<Task>()
+                .Where(x => x.Id == taskId)
+                .Set(x => x.IsConfirmedByUser, true)
+                .Update();
+
+            if (response.ResponseMessage.IsSuccessStatusCode)
+            {
+                return response.Model.MapTaskToDTO();
+            }
+
+            return null;
+
+
+        }
+
+        public async Task<GetTaskDTO?> UpdateTaskStatusChild(int taskId)
+        {
+            var response = await _supabaseClient.From<Task>()
+                .Where(x => x.Id == taskId)
+                .Set(x => x.IsConfirmedByChild, true)
+                .Update();
+
+            if (response.ResponseMessage.IsSuccessStatusCode)
+            {
+                return response.Model.MapTaskToDTO();
             }
 
             return null;
