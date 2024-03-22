@@ -1,0 +1,10 @@
+namespace API.Models.DTOs.Leaderboard
+{
+    public class GetLeaderboardDTO
+    {
+        public int Id { get; set; }
+        public int Score { get; set; };
+        public int Rank { get; set; };
+        public required string PlayerId { get; set; };
+    }
+}
