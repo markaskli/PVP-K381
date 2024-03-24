@@ -32,12 +32,12 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(CreateRoom request)
         {
             try
             {
                 string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
-                var createdRoom = await _roomService.CreateRoomAsync(userToken);
+                var createdRoom = await _roomService.CreateRoomAsync(userToken, request);
                 if (createdRoom == null)
                 {
                     return StatusCode(500, "An error occurred while trying to create a room.");
@@ -131,7 +131,7 @@ namespace API.Controllers
 
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteById(string id)
         {
             var result = await _roomService.DeleteRoomByIdAsync(id);

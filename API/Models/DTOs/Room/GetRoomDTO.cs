@@ -8,6 +8,7 @@ namespace API.Models.DTOs.Room
     {
         public required string Id { get; set; }
         public required DateTime CreatedAt { get; set; }
+        public required string Name { get; set; }
         public required string InvitationCode { get; set; }
         public required string CreatedBy { get; set; }
         public List<ChildRoomDTO> Children { get; set; } = new();

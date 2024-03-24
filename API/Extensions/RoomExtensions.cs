@@ -11,6 +11,7 @@ namespace API.Extensions
             return new CreatedRoomDTO()
             {
                 CreatedAt = room.CreatedAt,
+                Name = room.Name,
                 InvitationCode = room.InvitationCode,
                 CreatedBy = room.CreatedById
             };
@@ -22,6 +23,7 @@ namespace API.Extensions
             {
                 Id = room.Id,
                 CreatedAt = room.CreatedAt,
+                Name = room.Name,
                 InvitationCode = room.InvitationCode,
                 CreatedBy = room.CreatedById,
                 Children = room.Children.Select(x => new ChildRoomDTO()
@@ -41,6 +43,7 @@ namespace API.Extensions
             {
                 Id = room.Id,
                 CreatedAt = room.CreatedAt,
+                Name = room.Name,
                 InvitationCode = room.InvitationCode,
                 CreatorName = room.CreatorName,
                 CreatorSurname = room.CreatorSurname

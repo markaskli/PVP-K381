@@ -4,7 +4,7 @@ namespace API.Services.RoomService
 {
     public interface IRoomService
     {
-        Task<CreatedRoomDTO?> CreateRoomAsync(string token);
+        Task<CreatedRoomDTO?> CreateRoomAsync(string token, CreateRoom request);
         Task<bool> DeleteRoomByIdAsync(string roomId);
         Task<GetRoomDTO> GetRoomById(string id);
         Task<List<GetDetailedRoomDTO>?> GetRoomsByChildIdAsync(string userToken);

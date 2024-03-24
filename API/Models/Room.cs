@@ -10,6 +10,8 @@ namespace API.Models
         public string Id { get; set; } = null!;
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
+        [Column("name")]
+        public string Name { get; set; } = null!;
         [Column("invitation_code")]
         public string InvitationCode { get; set; } = null!;
         [Column("created_by_id")]

@@ -7,7 +7,9 @@ namespace API.Models
         [JsonProperty("id")]
         public string Id { get; set; } = null!;
         [JsonProperty("created_at")]
-        public DateTime CreatedAt { get; set; } 
+        public DateTime CreatedAt { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; } = null!;
         [JsonProperty("invitation_code")]
         public string InvitationCode { get; set; } = null!;
         [JsonProperty("creator_name")]

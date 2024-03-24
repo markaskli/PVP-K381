@@ -21,7 +21,7 @@ namespace API.Services.RoomService
             _supabaseClient = supabaseClient;
         }
 
-        public async Task<CreatedRoomDTO?> CreateRoomAsync(string token)
+        public async Task<CreatedRoomDTO?> CreateRoomAsync(string token, CreateRoom request)
         {
 
             var creator = await _supabaseClient.Auth.GetUser(token);
@@ -52,6 +52,7 @@ namespace API.Services.RoomService
             {
                 CreatedAt = DateTime.Now.Date,
                 CreatedById = creator.Id,
+                Name = request.Name,
                 InvitationCode = invitationCode
             };
 

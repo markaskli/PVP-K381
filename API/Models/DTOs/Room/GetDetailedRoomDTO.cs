@@ -6,6 +6,7 @@ namespace API.Models.DTOs.Room
     {
         public required string Id { get; set; }
         public required DateTime CreatedAt { get; set; }
+        public required string Name { get; set; }
         public required string InvitationCode { get; set; }
         public required string CreatorName { get; set; }
         public required string CreatorSurname { get; set; }
