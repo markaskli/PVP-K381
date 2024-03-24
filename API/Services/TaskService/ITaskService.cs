@@ -4,8 +4,8 @@ namespace API.Services.TaskService
 {
     public interface ITaskService
     {
-        Task<GetTaskDTO?> CreateTaskForRoomAsync(CreateTaskDTO request, string creatorToken);
-        Task<GetTaskDTO?> CreateTaskForChildAsync(CreateTaskDTO request, string creatorUserId);
+        Task<GetTaskDTO?> CreateTaskForRoomAsync(CreateTaskForRoomDTO request, string creatorToken);
+        Task<GetTaskDTO?> CreateTaskForChildAsync(CreateTaskForChildDTO request, string creatorUserId);
         Task<bool> DeleteTaskAsync(int taskId);
         Task<GetTaskDTO> GetTaskByIdAsync(int id);
         Task<List<GetTaskDTO>> GetTasksByCreatorAsync(string parentId);

@@ -63,7 +63,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> CreateForChild(CreateTaskDTO request)
+        public async Task<ActionResult> CreateForChild(CreateTaskForChildDTO request)
         {
             string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
             try
@@ -88,7 +88,7 @@ namespace API.Controllers
 
         [HttpPost("room")]
         [Authorize]
-        public async Task<ActionResult> CreateForRoom(CreateTaskDTO request)
+        public async Task<ActionResult> CreateForRoom(CreateTaskForRoomDTO request)
         {
             string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
             try

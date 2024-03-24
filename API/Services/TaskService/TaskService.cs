@@ -69,7 +69,7 @@ namespace API.Services.TaskService
             return tasks.Select(task => task.MapTaskToDTO()).ToList();
         }
 
-        public async Task<GetTaskDTO?> CreateTaskForChildAsync(CreateTaskDTO request, string creatorToken)
+        public async Task<GetTaskDTO?> CreateTaskForChildAsync(CreateTaskForChildDTO request, string creatorToken)
         {
             if (request.AssignedToId == null)
             {
@@ -124,7 +124,7 @@ namespace API.Services.TaskService
 
         }
 
-        public async Task<GetTaskDTO?> CreateTaskForRoomAsync(CreateTaskDTO request, string creatorToken)
+        public async Task<GetTaskDTO?> CreateTaskForRoomAsync(CreateTaskForRoomDTO request, string creatorToken)
         {
             if (request.AssignToRoomId == null)
             {
