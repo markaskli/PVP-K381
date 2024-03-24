@@ -10,13 +10,13 @@ namespace API.Extensions
             return new GetTaskDTO()
             {
                 Id = task.Id,
-                CreatedAt = task.CreatedAt.ToString("yyyy/MM/dd"),
+                CreatedAt = task.CreatedAt,
                 Name = task.Name,
                 Description = task.Description,
                 Points = task.Points,
                 IsConfirmedByChild = task.IsConfirmedByChild,
                 IsConfirmedByParent = task.IsConfirmedByUser,
-                DueDate = task.DueDate.ToString("yyyy/MM/dd"),
+                DueDate = task.DueDate,
                 AssignedToChildId = task.AssignedToChildId,
                 AssignedToRoomId = task.AssignedToRoom,
                 CreatedById = task.CreatedById
