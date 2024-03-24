@@ -89,13 +89,7 @@ namespace API.Services.TaskService
                 throw new ArgumentException("An error occurred while trying to get the information of current user.");
             }
 
-            DateTime requestDueDate;
-            if (!DateTime.TryParse(request.DueDate, out requestDueDate))
-            {
-                throw new FormatException("The provided date was in an incorrect format.");
-            }
-
-            if (requestDueDate.Date < DateTime.Now.Date)
+            if (request.DueDate < DateTime.Now.Date)
             {
                 throw new ArgumentException("Invalid value of due date provided.");
             }
@@ -108,7 +102,7 @@ namespace API.Services.TaskService
                 Points = request.Points,
                 IsConfirmedByChild = false,
                 IsConfirmedByUser = false,
-                DueDate = requestDueDate,
+                DueDate = request.DueDate,
                 CreatedById = creatorId,
                 AssignedToChildId = request.AssignedToId,
                 AssignedToRoom = null
@@ -153,13 +147,7 @@ namespace API.Services.TaskService
                 throw new ArgumentException("Amount of points can not be lower or equal to 0.");
             }         
 
-            DateTime requestDueDate;
-            if (!DateTime.TryParse(request.DueDate, out requestDueDate))
-            {
-                throw new FormatException("The provided date was in an incorrect format.");
-            }
-
-            if (requestDueDate.Date < DateTime.Now.Date)
+            if (request.DueDate < DateTime.Now.Date)
             {
                 throw new ArgumentException("Invalid value of due date provided.");
             }
@@ -172,7 +160,7 @@ namespace API.Services.TaskService
                 Points = request.Points,
                 IsConfirmedByChild = false,
                 IsConfirmedByUser = false,
-                DueDate = requestDueDate,
+                DueDate = request.DueDate,
                 CreatedById = creatorId,
                 AssignedToChildId = null,
                 AssignedToRoom = room.Id
@@ -229,12 +217,7 @@ namespace API.Services.TaskService
 
             if (request.DueDate != null)
             {
-                DateTime requestDueDate;
-                if (!DateTime.TryParse(request.DueDate, out requestDueDate))
-                {
-                    throw new FormatException("The provided date was in an incorrect format.");
-                }
-                task.DueDate = requestDueDate;
+                task.DueDate = request.DueDate.Value;
             }
 
             if (request.Name != null)

@@ -10,7 +10,7 @@ namespace API.Extensions
         {
             return new CreatedRoomDTO()
             {
-                CreatedAt = room.CreatedAt.ToString("yyyy/MM/dd"),
+                CreatedAt = room.CreatedAt,
                 InvitationCode = room.InvitationCode,
                 CreatedBy = room.CreatedById
             };
@@ -21,7 +21,7 @@ namespace API.Extensions
             return new GetRoomDTO()
             {
                 Id = room.Id,
-                CreatedAt = room.CreatedAt.ToString("yyyy/MM/dd"),
+                CreatedAt = room.CreatedAt,
                 InvitationCode = room.InvitationCode,
                 CreatedBy = room.CreatedById,
                 Children = room.Children.Select(x => new ChildRoomDTO()
@@ -40,7 +40,7 @@ namespace API.Extensions
             return new GetDetailedRoomDTO()
             {
                 Id = room.Id,
-                CreatedAt = room.CreatedAt.ToString("yyyy/MM/dd"),
+                CreatedAt = room.CreatedAt,
                 InvitationCode = room.InvitationCode,
                 CreatorName = room.CreatorName,
                 CreatorSurname = room.CreatorSurname
