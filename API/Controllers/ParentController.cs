@@ -54,9 +54,9 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult> RegisterChild(CreateInitialChildDTO request)
         {
-            string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
             try
             {
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
                 var result = await _parentService.RegisterChild(request, userToken);
                 if (result == null)
                 {
@@ -75,6 +75,10 @@ namespace API.Controllers
             catch (GotrueException)
             {
                 return BadRequest();
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
             }
 
 

@@ -84,18 +84,18 @@ namespace API.Services.ParentService
             if (existingCodes != null && existingCodes.Content != null)
             {
                 var existingInvitationCodes = JArray.Parse(existingCodes.Content);
-                invitationCode = RandomGenerator.GenerateRandomString(6);
+                invitationCode = RandomGenerator.GenerateRandomString(Utils.Constants.ChildInvitationCodeLength);
                 bool codeExists = existingInvitationCodes.Any(x => x["invitation_code"]?.ToString() == invitationCode);
                 while (codeExists)
                 {
-                    invitationCode = RandomGenerator.GenerateRandomString(6);
+                    invitationCode = RandomGenerator.GenerateRandomString(Utils.Constants.ChildInvitationCodeLength);
                     codeExists = existingInvitationCodes.Any(x => x["invitation_code"]?.ToString() == invitationCode);
                 }
 
             }
             else
             {
-                invitationCode = RandomGenerator.GenerateRandomString(6);
+                invitationCode = RandomGenerator.GenerateRandomString(Utils.Constants.ChildInvitationCodeLength);
             }
 
             if (invitationCode.Length == 0)
@@ -127,8 +127,8 @@ namespace API.Services.ParentService
                 Data = childData 
             };
 
-            string randomEmail = $"foo-{RandomGenerator.GenerateRandomString(6)}@bar.com";
-            string randomPassword = $"{RandomGenerator.GenerateRandomString(6)}";
+            string randomEmail = $"foo-{RandomGenerator.GenerateRandomString(Utils.Constants.RandomEmailLength)}@bar.com";
+            string randomPassword = $"{RandomGenerator.GenerateRandomString(Utils.Constants.RandomPasswordLength)}";
 
             var session = await _supabaseClient.Auth.SignUp(randomEmail, randomPassword, signupOptions);
             if ((session == null) || session.User != null && session.User.Identities != null && session.User.Identities.Count == 0)
