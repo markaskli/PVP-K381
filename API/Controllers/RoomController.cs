@@ -52,6 +52,10 @@ namespace API.Controllers
             {
                 return BadRequest(new ProblemDetails() { Detail = ex.Message });
             }
+            catch (IndexOutOfRangeException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
+            }
 
 
         }
@@ -88,26 +92,42 @@ namespace API.Controllers
         [HttpGet("creator")]
         public async Task<ActionResult> GetOfCreator()
         {
-            string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var result = await _roomService.GetRoomsByCreatorIdAsync(userToken);
-            if (result.IsNullOrEmpty())
+            try
             {
-                return BadRequest(new ProblemDetails() { Detail = "No rooms created by the user were found."});
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+                var result = await _roomService.GetRoomsByCreatorIdAsync(userToken);
+                if (result.IsNullOrEmpty())
+                {
+                    return BadRequest(new ProblemDetails() { Detail = "No rooms created by the user were found." });
+                }
+                return Ok(result);
             }
-            return Ok(result);
+            catch (IndexOutOfRangeException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
+            }
+
 
         }
 
         [HttpGet("child")]
         public async Task<ActionResult> GetOfChild()
         {
-            string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var result = await _roomService.GetRoomsByChildIdAsync(userToken);
-            if (result.IsNullOrEmpty())
+            try
             {
-                return BadRequest(new ProblemDetails() { Detail = "No rooms were found with the user." });
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+                var result = await _roomService.GetRoomsByChildIdAsync(userToken);
+                if (result.IsNullOrEmpty())
+                {
+                    return BadRequest(new ProblemDetails() { Detail = "No rooms were found with the user." });
+                }
+                return Ok(result);
             }
-            return Ok(result);
+            catch (IndexOutOfRangeException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
+            }
+
 
         }
 

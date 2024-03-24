@@ -65,9 +65,9 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult> CreateForChild(CreateTaskForChildDTO request)
         {
-            string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
             try
             {
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
                 var task = await _taskService.CreateTaskForChildAsync(request, userToken);
                 if (task == null)
                 {
@@ -82,7 +82,12 @@ namespace API.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(new ProblemDetails() { Detail = ex.Message });
-            }   
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
+            }
+
 
         }
 
@@ -90,9 +95,9 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult> CreateForRoom(CreateTaskForRoomDTO request)
         {
-            string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
             try
             {
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
                 var task = await _taskService.CreateTaskForRoomAsync(request, userToken);
                 if (task == null)
                 {
@@ -111,6 +116,10 @@ namespace API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
             }
 
         }
