@@ -2,7 +2,10 @@
 using API.Extensions;
 using API.Models.DTOs.Child;
 using API.Services.ChildService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Postgrest.Exceptions;
 using Supabase.Gotrue.Exceptions;
 
 namespace API.Controllers
@@ -43,8 +46,26 @@ namespace API.Controllers
                 throw;
 
             }
+        }
 
+        [HttpGet("parent")]
+        [Authorize]
+        public async Task<ActionResult> GetChildrenOfParent(string parentId)
+        {
+            try
+            {
+                var children = await _childService.GetChildrenOfParent(parentId);
+                if (children.IsNullOrEmpty())
+                {
+                    return NotFound();
+                }
+                return Ok(children);
 
+            }
+            catch (PostgrestException)
+            {
+                return BadRequest(new ProblemDetails() { Detail = "Invalid input type." });
+            }
 
         }
     }

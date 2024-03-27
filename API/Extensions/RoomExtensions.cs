@@ -26,8 +26,9 @@ namespace API.Extensions
                 Name = room.Name,
                 InvitationCode = room.InvitationCode,
                 CreatedBy = room.CreatedById,
-                Children = room.Children.Select(x => new ChildRoomDTO()
+                Children = room.Children.Select(x => new GetChildDTO()
                 {
+                    Id = x.Id,
                     Username = x.Username,
                     Name = x.Name,
                     Class = x.Class,

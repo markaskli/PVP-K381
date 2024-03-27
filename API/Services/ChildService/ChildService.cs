@@ -78,5 +78,26 @@ namespace API.Services.ChildService
 
 
         }
+
+        public async Task<List<GetChildDTO>> GetChildrenOfParent(string parentId)
+        {
+            var result = await _supabaseClient.From<Child>()
+                .Where(x => x.ParentId == parentId)
+                .Get();
+
+            if (result != null && result.ResponseMessage.IsSuccessStatusCode)
+            {
+                return result.Models.Select(x => new GetChildDTO()
+                {
+                    Id = x.Id,
+                    Username = x.Username,
+                    Name = x.Name,
+                    Class = x.Class
+
+                }).ToList();
+            }
+
+            return new List<GetChildDTO>();
+        }
     }
 }
