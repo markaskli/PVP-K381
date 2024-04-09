@@ -16,6 +16,8 @@ namespace API.Models
         public string Class { get; set; } = null!;
         [Column("email")]
         public string Email { get; set; } = null!;
+        [Column("has_joined")]
+        public bool HasJoined { get; set; } = false;
         [Column("role_id")]
         public int RoleId { get; set; } = 2;
         [Column("parent_id")]

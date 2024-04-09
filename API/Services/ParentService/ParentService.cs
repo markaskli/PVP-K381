@@ -44,27 +44,6 @@ namespace API.Services.ParentService
             return session;
         }
 
-
-        // TO DO
-        public async Task<User> UpdateParentInformation(UpdateParentDTO request)
-        {
-            var attrs = new UserAttributes
-            {
-                Data = new Dictionary<string, object>
-                {
-                    { "", "" }
-                }
-            };
-
-            var response = await _supabaseClient.Auth.Update(attrs);
-            if (response != null)
-            {
-                return null;
-            }
-            return response;
-
-        }
-
         public async Task<ChildRegistrationDataDTO?> RegisterChild(CreateInitialChildDTO request, string requestToken)
         {
             string invitationCode = string.Empty;
