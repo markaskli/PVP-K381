@@ -8,5 +8,6 @@ namespace API.Services.ParentService
     {
         Task<ChildRegistrationDataDTO?> RegisterChild(CreateInitialChildDTO request, string requestToken);
         Task<Session> SignUp(CreateParentDTO request);
+
     }
 }
