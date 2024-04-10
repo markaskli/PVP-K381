@@ -93,7 +93,7 @@ namespace API.Services.ChildService
                     Username = x.Username,
                     Name = x.Name,
                     Class = x.Class,
-                    InvitationCode = x.InvitationCode ?? null,
+                    InvitationCode = x.InvitationCode,
                     HasJoined = x.HasJoined
                 }).ToList();
             }
