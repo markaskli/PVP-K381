@@ -6,7 +6,7 @@
         public required string Username { get; set; }
         public required string Name { get; set; }
         public required string Class { get; set; }
-        public required string InvitationCode { get; set; }
+        public string? InvitationCode { get; set; }
         public required bool HasJoined { get; set; }
     }
 }

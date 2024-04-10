@@ -59,6 +59,7 @@ namespace API.Services.ChildService
 
             initialChild.HasJoined = true;
             initialChild.Username = formattedUsername;
+            initialChild.InvitationCode = null;
             var res = await initialChild.Update<Child>();
 
             var childData = new Dictionary<string, object>
@@ -92,7 +93,7 @@ namespace API.Services.ChildService
                     Username = x.Username,
                     Name = x.Name,
                     Class = x.Class,
-                    InvitationCode = x.InvitationCode,
+                    InvitationCode = x.InvitationCode ?? null,
                     HasJoined = x.HasJoined
                 }).ToList();
             }
