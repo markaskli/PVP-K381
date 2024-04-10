@@ -84,19 +84,6 @@ namespace API.Controllers
 
         }
 
-        [HttpPatch]
-        public async Task<ActionResult> UpdateParentUser(UpdateParentDTO request)
-        {
-            var user = await _parentService.UpdateParentInformation(request);
-            if (user == null)
-            {
-                return BadRequest("An error occurred while trying to update the user.");
-            }
-
-            return Ok(user);
-        }
-
-
         [HttpGet]
         [Authorize(Policy = "RequireParentRole")]
         public ActionResult Get()

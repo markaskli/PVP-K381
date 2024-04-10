@@ -23,7 +23,7 @@ namespace API.Models
         [Column("parent_id")]
         public string ParentId { get; set; } = null!;
         [Column("invitation_code")]
-        public string InvitationCode { get; set; } = null!;
+        public string? InvitationCode { get; set; } 
 
     }
 }

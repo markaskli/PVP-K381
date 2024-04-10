@@ -37,6 +37,12 @@ namespace API.Services.ChildService
                 throw new ArgumentException("Child with specified registration code does not exist.");
             }
 
+            var session = await _supabaseClient.Auth.SignIn(initialChild.Email, request.CurrentPassword);
+            if ((session == null) || session.User != null && session.User.Identities != null && session.User.Identities.Count == 0)
+            {
+                throw new SignInFailedException("An error occurred while trying to sign in child user.");
+            }
+
             var existingUsernames = await _supabaseClient.From<Child>()
                 .Select(x => new object[] { x.Username })
                 .Get();
@@ -51,20 +57,14 @@ namespace API.Services.ChildService
                 }
             }
 
-
-            initialChild.Username = request.Username;
+            initialChild.HasJoined = true;
+            initialChild.Username = formattedUsername;
+            initialChild.InvitationCode = null;
             var res = await initialChild.Update<Child>();
-
-
-            var session = await _supabaseClient.Auth.SignIn(initialChild.Email, request.CurrentPassword);
-            if ((session == null) || session.User != null && session.User.Identities != null && session.User.Identities.Count == 0)
-            {
-                throw new SignInFailedException("An error occurred while trying to sign in child user.");
-            }
 
             var childData = new Dictionary<string, object>
             {
-                { "username", formattedUsername },
+                { "username", formattedUsername },               
             };
 
             var attrs = new UserAttributes 
@@ -79,7 +79,7 @@ namespace API.Services.ChildService
 
         }
 
-        public async Task<List<GetChildDTO>> GetChildrenOfParent(string parentId)
+        public async Task<List<GetChildOfParentDTO>> GetChildrenOfParent(string parentId)
         {
             var result = await _supabaseClient.From<Child>()
                 .Where(x => x.ParentId == parentId)
@@ -87,17 +87,18 @@ namespace API.Services.ChildService
 
             if (result != null && result.ResponseMessage.IsSuccessStatusCode)
             {
-                return result.Models.Select(x => new GetChildDTO()
+                return result.Models.Select(x => new GetChildOfParentDTO()
                 {
                     Id = x.Id,
                     Username = x.Username,
                     Name = x.Name,
-                    Class = x.Class
-
+                    Class = x.Class,
+                    InvitationCode = x.InvitationCode ?? null,
+                    HasJoined = x.HasJoined
                 }).ToList();
             }
 
-            return new List<GetChildDTO>();
+            return new List<GetChildOfParentDTO>();
         }
     }
 }
