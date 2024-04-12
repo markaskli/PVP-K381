@@ -191,12 +191,17 @@ namespace API.Services.RoomService
             return true;
         }
 
-        public async Task<bool> RemoveChildFromRoomAsync(RemoveChildFromRoomDTO request)
+        public async Task<bool> RemoveChildFromRoomAsync(string roomId, string childId)
         {
+            if (string.IsNullOrEmpty(roomId) || string.IsNullOrEmpty(childId))
+            {
+                return false;
+            }
+
             var deleteProps = new Dictionary<string, object>()
             {
-                { "roomid", request.UserId },
-                { "childid", request.ChildId },
+                { "roomid", roomId },
+                { "childid", childId },
             };
 
             var result = await _supabaseClient.Rpc("remove_child_from_room", deleteProps);

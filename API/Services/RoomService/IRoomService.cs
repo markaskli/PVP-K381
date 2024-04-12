@@ -10,6 +10,6 @@ namespace API.Services.RoomService
         Task<List<GetDetailedRoomDTO>?> GetRoomsByChildIdAsync(string userToken);
         Task<List<GetRoomDTO>?> GetRoomsByCreatorIdAsync(string userToken);
         Task<bool> JoinRoomAsync(string userToken, string invitationCode);
-        Task<bool> RemoveChildFromRoomAsync(RemoveChildFromRoomDTO request);
+        Task<bool> RemoveChildFromRoomAsync(string roomId, string childId);
     }
 }

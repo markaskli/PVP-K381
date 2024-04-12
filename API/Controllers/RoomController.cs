@@ -144,15 +144,24 @@ namespace API.Controllers
         }
 
         [HttpDelete("removeChild")]
-        public async Task<ActionResult> RemoveChild(RemoveChildFromRoomDTO request)
+        public async Task<ActionResult> RemoveChild(string roomId, string childId)
         {
-            var result = await _roomService.RemoveChildFromRoomAsync(request);
-            if (result)
+            try
             {
-                return StatusCode(204);
+                var result = await _roomService.RemoveChildFromRoomAsync(roomId, childId);
+                if (result)
+                {
+                    return StatusCode(204);
+                }
+
+                return BadRequest(new ProblemDetails() { Detail = "Bad ids provided." });
+
+            }
+            catch (PostgrestException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message});
             }
 
-            return BadRequest(new ProblemDetails() { Detail = "Bad ids provided." });
         }
     }
 }
