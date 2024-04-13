@@ -59,6 +59,10 @@ namespace API.Controllers
             {
                 return NotFound(new ProblemDetails() { Detail = ex.Message });
             }
+            catch (PostgrestException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -86,6 +90,10 @@ namespace API.Controllers
             catch (IndexOutOfRangeException)
             {
                 return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
+            }
+            catch (PostgrestException ex)
+            {
+                return StatusCode(500, ex.Message);
             }
 
 
@@ -120,6 +128,10 @@ namespace API.Controllers
             catch (IndexOutOfRangeException)
             {
                 return BadRequest(new ProblemDetails() { Detail = "Authorization token was not provided." });
+            }
+            catch (PostgrestException ex)
+            {
+                return StatusCode(500, ex.Message);
             }
 
         }
@@ -181,7 +193,7 @@ namespace API.Controllers
                     return Ok(result);
                 }
 
-                return BadRequest(new ProblemDetails() { Detail = "Invalid arguments were provided."});
+                return BadRequest(new ProblemDetails() { Detail = "Invalid arguments were provided." });
             }
             catch (PostgrestException ex)
             {

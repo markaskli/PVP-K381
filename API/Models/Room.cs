@@ -18,7 +18,5 @@ namespace API.Models
         public string CreatedById { get; set; } = null!;
         [Reference(typeof(Child), useInnerJoin: false)]
         public List<Child> Children { get; set; } = new();
-        [Reference(typeof(Task), useInnerJoin: false)]
-        public List<Task> Tasks { get; set; } = new();
     }
 }

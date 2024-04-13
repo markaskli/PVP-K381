@@ -18,9 +18,9 @@ namespace API.Services.TaskService
             _supabaseClient = supabaseClient;
         }
 
-        public async Task<GetTaskDTO> GetTaskByIdAsync(int id)
+        public async Task<GetTaskStatusDTO> GetTaskByIdAsync(int id)
         {
-            var task = await _supabaseClient.From<Task>()
+            var task = await _supabaseClient.From<AssignedTask>()
                 .Where(x => x.Id == id)
                 .Single();
 
@@ -33,43 +33,41 @@ namespace API.Services.TaskService
 
         }
 
-        public async Task<List<GetTaskDTO>> GetTasksOfChildAsync(string childId)
+        public async Task<List<GetTasksAssignedToChildDTO>> GetTasksOfChildAsync(string childId)
         {
             var childParams = new Dictionary<string, object>()
             {
                 { "childid", childId },
             };
 
-            var result = await _supabaseClient.Rpc("get_tasks_for_child", childParams);
+            var result = await _supabaseClient.Rpc("get_assigned_tasks_for_child", childParams);
             if (result.Content == null)
             {
                 throw new KeyNotFoundException($"No tasks were found for child with Id {childId}.");
             }
 
-            List<Task> tasks = JsonConvert.DeserializeObject<List<Task>>(result.Content);
-            return tasks.Select(task => task.MapTaskToDTO()).ToList();
+            List<GetTasksAssignedToChildDTO> tasks = JsonConvert.DeserializeObject<List<GetTasksAssignedToChildDTO>>(result.Content);
+            return tasks;
         }
 
-        public async Task<List<GetTaskDTO>> GetTasksByCreatorAsync(string userId)
+        public async Task<List<GetTasksCreatedByUserDTO>> GetTasksByCreatorAsync(string userId)
         {
             var userParams = new Dictionary<string, object>()
             {
                 { "userid", userId },
             };
 
-            var result = await _supabaseClient.Rpc("get_tasks_for_creator", userParams);
+            var result = await _supabaseClient.Rpc("get_assigned_tasks", userParams);
             if (result.Content == null)
             {
                 throw new KeyNotFoundException($"No tasks were submitted by parent with Id {userId}.");
             }
 
-            List<Task> tasks = JsonConvert.DeserializeObject<List<Task>>(result.Content);
-
-
-            return tasks.Select(task => task.MapTaskToDTO()).ToList();
+            List<GetTasksCreatedByUserDTO> tasks = JsonConvert.DeserializeObject<List<GetTasksCreatedByUserDTO>>(result.Content);
+            return tasks;
         }
 
-        public async Task<GetTaskDTO?> CreateTaskForChildAsync(CreateTaskForChildDTO request, string creatorToken)
+        public async Task<GetTaskStatusDTO?> CreateTaskForChildAsync(CreateTaskForChildDTO request, string creatorToken)
         {
             if (request.AssignedToId == null)
             {
@@ -98,27 +96,49 @@ namespace API.Services.TaskService
             {
                 Name = request.Name,
                 Description = request.Description,
-                CreatedAt = DateTime.Now,
                 Points = request.Points,
-                IsConfirmedByChild = false,
-                IsConfirmedByUser = false,
-                DueDate = request.DueDate,
-                CreatedById = creatorId,
-                AssignedToChildId = request.AssignedToId,
-                AssignedToRoom = null
+                DueDate = request.DueDate
             };
 
-            var result = await _supabaseClient.From<Task>().Insert(createdTask);
-            if (result != null && result.ResponseMessage.IsSuccessStatusCode)
+            var task = await _supabaseClient.From<Task>().Insert(createdTask);
+
+            var assignedTask = new AssignedTask()
             {
-                return result.Model.MapTaskToDTO();
+                TaskId = task.Model.Id,
+                ChildId = request.AssignedToId,
+                AssignedById = creatorId,
+                IsConfirmedByChild = false,
+                IsConfirmedByUser = false,
+                AssignedAt = DateTime.Now,
+                CompletedAt = null,
+            };
+
+            var result = await _supabaseClient
+                .From<AssignedTask>()
+                .Insert(assignedTask);
+
+            if (result.ResponseMessage.IsSuccessStatusCode)
+            {
+                return new GetTaskStatusDTO()
+                {
+                    Id = task.Model.Id,
+                    CreatedAt = assignedTask.AssignedAt,
+                    Name = task.Model.Name,
+                    Description = task.Model.Description,
+                    Points = task.Model.Points,
+                    IsConfirmedByChild = assignedTask.IsConfirmedByChild,
+                    IsConfirmedByParent = assignedTask.IsConfirmedByUser,
+                    DueDate = createdTask.DueDate,
+                    AssignedToChildId = assignedTask.ChildId,
+                    CreatedById = assignedTask.AssignedById
+                };
             }
 
             return null;
 
         }
 
-        public async Task<GetTaskDTO?> CreateTaskForRoomAsync(CreateTaskForRoomDTO request, string creatorToken)
+        public async Task<GetTaskDTOForRoom?> CreateTaskForRoomAsync(CreateTaskForRoomDTO request, string creatorToken)
         {
             if (request.AssignToRoomId == null)
             {
@@ -155,24 +175,54 @@ namespace API.Services.TaskService
             var createdTask = new Task()
             {
                 Name = request.Name,
-                Description = request.Description,
-                CreatedAt = DateTime.Now,
+                Description = request.Description,           
                 Points = request.Points,
-                IsConfirmedByChild = false,
-                IsConfirmedByUser = false,
-                DueDate = request.DueDate,
-                CreatedById = creatorId,
-                AssignedToChildId = null,
-                AssignedToRoom = room.Id
+                DueDate = request.DueDate
             };
 
-            var result = await _supabaseClient.From<Task>().Insert(createdTask);
-            if (result != null && result.ResponseMessage.IsSuccessStatusCode)
+            var task = await _supabaseClient.From<Task>().Insert(createdTask);
+            var assignedTask = new AssignedTask()
             {
-                return result.Model.MapTaskToDTO();
+                TaskId = task.Model.Id,
+                AssignedById = creatorId,
+                IsConfirmedByChild = false,
+                IsConfirmedByUser = false,
+                AssignedAt = DateTime.Now,
+                CompletedAt = null,
+                RoomId = room.Id
+            };
+
+            var resultDto = new GetTaskDTOForRoom()
+            {
+                Id = task.Model.Id,
+                CreatedAt = assignedTask.AssignedAt,
+                Name = task.Model.Name,
+                Description = task.Model.Description,
+                Points = task.Model.Points,
+                DueDate = createdTask.DueDate,
+                CreatedById = assignedTask.AssignedById
+            };
+
+            foreach (Child child in room.Children)
+            {
+                assignedTask.ChildId = child.Id;
+                var result = await _supabaseClient
+                    .From<AssignedTask>()
+                    .Insert(assignedTask);
+
+                if (!result.ResponseMessage.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                resultDto.AssignedToIds.Add(child.Id);
+
             }
 
-            return null;
+
+
+
+            return resultDto;
 
 
         }
@@ -257,16 +307,6 @@ namespace API.Services.TaskService
                 
             }
 
-            if (request.IsConfirmedByChild != null)
-            {
-                task.IsConfirmedByChild = request.IsConfirmedByChild.Value;
-            }
-
-            if (request.IsConfirmedByUser != null)
-            {
-                task.IsConfirmedByUser = request.IsConfirmedByUser.Value;
-            }
-
             var result = await task.Update<Task>();
             if (result != null && result.ResponseMessage.IsSuccessStatusCode)
             {
@@ -276,9 +316,9 @@ namespace API.Services.TaskService
             return null;
         }
 
-        public async Task<GetTaskDTO?> UpdateTaskStatusCreator(int taskId)
+        public async Task<GetTaskStatusDTO?> UpdateTaskStatusCreator(int taskId)
         {
-            var response = await _supabaseClient.From<Task>()
+            var response = await _supabaseClient.From<AssignedTask>()
                 .Where(x => x.Id == taskId)
                 .Set(x => x.IsConfirmedByUser, true)
                 .Update();
@@ -293,9 +333,9 @@ namespace API.Services.TaskService
 
         }
 
-        public async Task<GetTaskDTO?> UpdateTaskStatusChild(int taskId)
+        public async Task<GetTaskStatusDTO?> UpdateTaskStatusChild(int taskId)
         {
-            var response = await _supabaseClient.From<Task>()
+            var response = await _supabaseClient.From<AssignedTask>()
                 .Where(x => x.Id == taskId)
                 .Set(x => x.IsConfirmedByChild, true)
                 .Update();
