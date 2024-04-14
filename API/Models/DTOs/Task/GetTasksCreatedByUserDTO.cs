@@ -18,6 +18,8 @@ namespace API.Models.DTOs.Task
         public DateTime? CompletedAt { get; set; }
         [JsonProperty("due_date")]
         public DateTime DueDate { get; set; }
+        [JsonProperty("room_id")]
+        public required string RoomId { get; set; }
         [JsonProperty("room_name")]
         public string? RoomName { get; set; }
         [JsonProperty("task_name")]

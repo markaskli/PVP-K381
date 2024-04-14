@@ -20,6 +20,8 @@ namespace API.Models.DTOs.Task
         public required string AssignedByName { get; set; }
         [JsonProperty("assigned_by_surname")]
         public required string AssignedBySurname { get; set; }
+        [JsonProperty("room_id")]
+        public required string RoomId { get; set; }
         [JsonProperty("room_name")]
         public string? RoomName { get; set; }
         [JsonProperty("task_name")]
