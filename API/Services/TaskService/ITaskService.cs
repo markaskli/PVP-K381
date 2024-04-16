@@ -11,7 +11,7 @@ namespace API.Services.TaskService
         Task<List<GetTasksCreatedByUserDTO>> GetTasksByCreatorAsync(string parentId);
         Task<List<GetTasksAssignedToChildDTO>> GetTasksOfChildAsync(string childId);
         Task<GetTaskDTO?> UpdateTaskAsync(UpdateTaskDTO request);
-        Task<GetTaskStatusDTO?> UpdateTaskStatusCreator(int taskId);
-        Task<GetTaskStatusDTO?> UpdateTaskStatusChild(int taskId);
+        Task<GetTaskStatusDTO> UpdateTaskStatusCreator(int assignedTaskId, string userToken);
+        Task<GetTaskStatusDTO?> UpdateTaskStatusChild(int assignedTaskId, string userToken);
     }
 }

@@ -21,7 +21,7 @@ namespace API.Services.TaskService
         public async Task<List<GetTaskStatusDTO>> GetTaskByIdAsync(int id)
         {
             var tasks = await _supabaseClient.From<AssignedTask>()
-                .Where(x => x.TaskId == id)
+                .Where(x => x.Id == id)
                 .Get();
 
             if (tasks.Models.Count <= 0)
@@ -316,36 +316,68 @@ namespace API.Services.TaskService
             return null;
         }
 
-        public async Task<GetTaskStatusDTO?> UpdateTaskStatusCreator(int taskId)
+        public async Task<GetTaskStatusDTO> UpdateTaskStatusCreator(int assignedTaskId, string userToken)
         {
-            var response = await _supabaseClient.From<AssignedTask>()
-                .Where(x => x.Id == taskId)
-                .Set(x => x.IsConfirmedByUser, true)
-                .Update();
-
-            if (response.ResponseMessage.IsSuccessStatusCode)
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtTokenObject = tokenHandler.ReadJwtToken(userToken);
+            var userId = jwtTokenObject.Subject;
+            if (userId == null)
             {
-                return response.Model.MapTaskToDTO();
+                throw new InvalidOperationException("An error occurred while trying to get the information of current user.");
             }
 
-            return null;
+            var assignedTask = await _supabaseClient.From<AssignedTask>()
+                .Where(x => x.Id == assignedTaskId && x.AssignedById == userId)
+                .Single();
+
+            if (assignedTask == null)
+            {
+                throw new KeyNotFoundException("No task was found");
+            }
+
+            if (assignedTask.Task.DueDate.Date < DateTime.Now.Date || assignedTask.IsConfirmedByUser == true)
+            {
+                throw new ArgumentException("Cannot update the status of a task.");
+            }
+
+            assignedTask.IsConfirmedByUser = true;
+            await assignedTask.Update<AssignedTask>();
+            
+
+            return assignedTask.MapTaskToDTO();
 
 
         }
 
-        public async Task<GetTaskStatusDTO?> UpdateTaskStatusChild(int taskId)
+        public async Task<GetTaskStatusDTO?> UpdateTaskStatusChild(int assignedTaskId, string userToken)
         {
-            var response = await _supabaseClient.From<AssignedTask>()
-                .Where(x => x.Id == taskId)
-                .Set(x => x.IsConfirmedByChild, true)
-                .Update();
-
-            if (response.ResponseMessage.IsSuccessStatusCode)
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtTokenObject = tokenHandler.ReadJwtToken(userToken);
+            var userId = jwtTokenObject.Subject;
+            if (userId == null)
             {
-                return response.Model.MapTaskToDTO();
+                throw new InvalidOperationException("An error occurred while trying to get the information of current user.");
             }
 
-            return null;
+            var assignedTask = await _supabaseClient.From<AssignedTask>()
+                .Where(x => x.Id == assignedTaskId && x.ChildId == userId)
+                .Single();
+
+            if (assignedTask == null)
+            {
+                throw new KeyNotFoundException("No task was found");
+            }
+
+            if (assignedTask.Task.DueDate.Date < DateTime.Now.Date || assignedTask.IsConfirmedByChild == true)
+            {
+                throw new ArgumentException("Cannot update the status of a task.");
+            }
+
+            assignedTask.IsConfirmedByChild = true;
+            await assignedTask.Update<AssignedTask>();
+
+
+            return assignedTask.MapTaskToDTO();
         }
     }
 }

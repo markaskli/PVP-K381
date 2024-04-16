@@ -183,11 +183,13 @@ namespace API.Controllers
         }
 
         [HttpPatch("child")]
+        [Authorize]
         public async Task<ActionResult> SetTaskCompletedChild(int taskId)
         {
             try
             {
-                var result = await _taskService.UpdateTaskStatusChild(taskId);
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+                var result = await _taskService.UpdateTaskStatusChild(taskId, userToken);
                 if (result != null)
                 {
                     return Ok(result);
@@ -198,16 +200,30 @@ namespace API.Controllers
             catch (PostgrestException ex)
             {
                 return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
 
 
         [HttpPatch("creator")]
+        [Authorize]
         public async Task<ActionResult> SetTaskCompletedCreator(int taskId)
         {
             try
             {
-                var result = await _taskService.UpdateTaskStatusCreator(taskId);
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+                var result = await _taskService.UpdateTaskStatusCreator(taskId, userToken);
                 if (result != null)
                 {
                     return Ok(result);
@@ -219,6 +235,18 @@ namespace API.Controllers
             catch (PostgrestException ex)
             {
                 return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
     }
