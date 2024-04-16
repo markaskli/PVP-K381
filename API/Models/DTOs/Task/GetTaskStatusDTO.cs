@@ -12,7 +12,10 @@
         public bool IsConfirmedByParent { get; set; }
         public required DateTime DueDate { get; set; }
         public required string CreatedById { get; set; }
-        public string AssignedToChildId { get; set; }
+        public string? CreatedByName { get; set; }
+        public string? CreatedBySurname { get; set; }
+        public required string AssignedToChildId { get; set; }
+        public string? ChildName { get; set; }
         public bool IsFinished { get; set; }
         public DateTime? CompletedAt { get; set; }
 

@@ -19,7 +19,10 @@ namespace API.Extensions
                 IsConfirmedByParent = assignedTask.IsConfirmedByUser,
                 DueDate = assignedTask.Task.DueDate,
                 AssignedToChildId = assignedTask.ChildId,
+                ChildName = assignedTask.Child.Name,
                 CreatedById = assignedTask.AssignedById,
+                CreatedByName = assignedTask.User.RawUserData.Name,
+                CreatedBySurname = assignedTask.User.RawUserData.Surname,
                 CompletedAt = assignedTask.CompletedAt,
                 IsFinished = assignedTask.IsFinished
             };

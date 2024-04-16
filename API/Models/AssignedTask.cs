@@ -1,5 +1,6 @@
 ﻿using Postgrest.Attributes;
 using Postgrest.Models;
+using Supabase.Gotrue;
 
 namespace API.Models
 {
@@ -12,8 +13,12 @@ namespace API.Models
         public Task Task { get; set; } 
         [Column("task_id")]
         public int TaskId { get; set; }
+        [Reference(typeof(Child), useInnerJoin: true)]
+        public Child Child { get; set; }
         [Column("child_id")]
         public string ChildId { get; set; } = null!;
+        [Reference(typeof(Users), useInnerJoin: true)]
+        public Users User { get; set; }
         [Column("assigned_by_id")]
         public string AssignedById { get; set; } = null!;
         [Column("is_confirmed_by_child")]
