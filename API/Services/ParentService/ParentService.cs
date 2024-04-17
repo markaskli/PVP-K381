@@ -98,7 +98,8 @@ namespace API.Services.ParentService
                 { "class", request.Class },
                 { "parent_id", parent.Id },
                 { "role_id", 2 },
-                { "invitation_code", invitationCode }
+                { "invitation_code", invitationCode },
+                { "points", 0 }
             };
 
             var signupOptions = new SignUpOptions

@@ -16,6 +16,8 @@ namespace API.Models
         public string InvitationCode { get; set; } = null!;
         [Column("created_by_id")]
         public string CreatedById { get; set; } = null!;
+        [Reference(typeof(AssignedTask), useInnerJoin: true)]
+        public List<AssignedTask> Assignments { get; set; } = new();
         [Reference(typeof(Child), useInnerJoin: false)]
         public List<Child> Children { get; set; } = new();
     }

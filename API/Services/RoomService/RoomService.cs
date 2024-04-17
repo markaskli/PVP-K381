@@ -109,6 +109,22 @@ namespace API.Services.RoomService
             var result = await _supabaseClient.Rpc("add_child_to_room", childRoom);
             if (result != null && result.ResponseMessage.IsSuccessStatusCode)
             {
+                var assignedTaskToRoom = room.Assignments.GroupBy(task => task.TaskId).Select(t => t.First()).ToList();
+                List<AssignedTask> newTasksForUser = new();
+                foreach (AssignedTask task in assignedTaskToRoom)
+                {                
+                    if(task.Task.DueDate.Date >= DateTime.Now.Date)
+                    {
+                        task.ChildId = childId;
+                        task.IsConfirmedByChild = false;
+                        task.IsConfirmedByUser = false;
+                        task.CompletedAt = null;
+                        task.IsFinished = false;
+                        newTasksForUser.Add(task);                 
+                    }
+                }
+                await _supabaseClient.From<AssignedTask>()
+                    .Insert(newTasksForUser);
                 return true;
             }
 
