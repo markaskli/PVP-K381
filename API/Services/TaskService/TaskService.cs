@@ -18,10 +18,25 @@ namespace API.Services.TaskService
             _supabaseClient = supabaseClient;
         }
 
-        public async Task<List<GetTaskStatusDTO>> GetTaskByIdAsync(int id)
+        public async Task<List<GetTaskStatusDTO>> GetAssignedTaskAsync(int id)
         {
             var tasks = await _supabaseClient.From<AssignedTask>()
                 .Where(x => x.Id == id)
+                .Get();
+
+            if (tasks.Models.Count <= 0)
+            {
+                throw new KeyNotFoundException("No task was found");
+            }
+
+            return tasks.Models.Select(task => task.MapTaskToDTO()).ToList();
+
+        }
+
+        public async Task<List<GetTaskStatusDTO>> GetTaskByIdAsync(int taskId)
+        {
+            var tasks = await _supabaseClient.From<AssignedTask>()
+                .Where(x => x.TaskId == taskId)
                 .Get();
 
             if (tasks.Models.Count <= 0)

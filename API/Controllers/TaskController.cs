@@ -24,7 +24,21 @@ namespace API.Controllers
         {
             try
             {
-                var task = await _taskService.GetTaskByIdAsync(id);
+                var task = await _taskService.GetAssignedTaskAsync(id);
+                return Ok(task);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ProblemDetails() { Detail = ex.Message });
+            }
+        }
+
+        [HttpGet("taskId")]
+        public async Task<ActionResult> GetAssignedTaskByTaskId(int taskId)
+        {
+            try
+            {
+                var task = await _taskService.GetTaskByIdAsync(taskId);
                 return Ok(task);
             }
             catch (KeyNotFoundException ex)
