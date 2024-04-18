@@ -8,7 +8,9 @@ namespace API.Utils
 
         public static string GenerateRandomString(int length)
         {
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            string chars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
+
+
             StringBuilder builder = new StringBuilder(length);
 
             for (int i = 0; i < length; i++)

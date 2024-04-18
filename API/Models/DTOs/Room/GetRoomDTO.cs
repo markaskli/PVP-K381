@@ -12,6 +12,6 @@ namespace API.Models.DTOs.Room
         public required string InvitationCode { get; set; }
         public required string CreatedBy { get; set; }
         public List<GetChildDTO> Children { get; set; } = new();
-        public List<GetTaskDTO> Tasks { get; set; } = new();
+        public List<GetTaskStatusDTO> Tasks { get; set; } = new();
     }
 }

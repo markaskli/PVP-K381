@@ -6,6 +6,7 @@
         public required string Token { get; set; }
         public required string Username { get; set; }
         public int RoleId { get; set; }
+        public int Points { get; set; }
 
     }
 }

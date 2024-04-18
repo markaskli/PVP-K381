@@ -48,6 +48,22 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<GetChildDTO>> GetChildInformation()
+        {
+            try
+            {
+                string userToken = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+                var child = await _childService.GetChildInformation(userToken);
+                return Ok(child);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }
+        }
+
         [HttpGet("parent")]
         [Authorize]
         public async Task<ActionResult> GetChildrenOfParent(string parentId)

@@ -34,7 +34,7 @@ namespace API.Extensions
                     Class = x.Class,
 
                 }).ToList(),
-                Tasks = room.Tasks.Select(x => x.MapTaskToDTO()).ToList()
+                Tasks = null /*room.Tasks.Select(x => x.MapTaskToDTO()).ToList()*/
             };
         }
 

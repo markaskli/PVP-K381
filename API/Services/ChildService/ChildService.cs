@@ -4,6 +4,7 @@ using API.Models.DTOs.Child;
 using Newtonsoft.Json.Linq;
 using Supabase.Gotrue;
 using Supabase.Gotrue.Exceptions;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace API.Services.ChildService
 {
@@ -77,6 +78,30 @@ namespace API.Services.ChildService
             return session;
 
 
+        }
+
+        public async Task<GetChildDTO> GetChildInformation(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtTokenObject = tokenHandler.ReadJwtToken(token);
+            var childId = jwtTokenObject.Subject;
+            if (childId == null)
+            {
+                throw new ArgumentException("An error occurred while trying to get the information of current user.");
+            }
+
+            var child = await _supabaseClient.From<Child>()
+                .Where(x => x.Id == childId)
+                .Single();
+
+            return new GetChildDTO()
+            {
+                Id = child.Id,
+                Username = child.Username,
+                Name = child.Name,
+                Class = child.Class,
+                Points = child.Points
+            };
         }
 
         public async Task<List<GetChildOfParentDTO>> GetChildrenOfParent(string parentId)

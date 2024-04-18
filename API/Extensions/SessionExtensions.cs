@@ -43,6 +43,8 @@ namespace API.Extensions
             {
                 return null;
             }
+
+
             
             return new GetUserInformationDTO()
             {
@@ -52,7 +54,7 @@ namespace API.Extensions
                 Surname = surname,
                 ProfilePictureUrl = profilePictureUrl,
                 RoleId = roleId,
-                Email = user.Email ?? ""
+                Email = user.Email ?? "",
             };
         }
 
@@ -81,13 +83,20 @@ namespace API.Extensions
                 return null;
             }
 
+            int totalPoints = 0;
+            if (user.UserMetadata.TryGetValue("points", out var totalPointsObj))
+            {
+                totalPoints = (int)(long)totalPointsObj;
+            }
+
 
             return new GetChildInformationDTO()
             {
                 Id = user.Id ?? "",
                 Token = session.AccessToken ?? "",
                 Username= username,
-                RoleId = roleId
+                RoleId = roleId,
+                Points = totalPoints
             };
         }
 
