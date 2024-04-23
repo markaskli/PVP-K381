@@ -88,7 +88,6 @@ export const ChangePasswordPage: React.FC<TaskFormProps> = ({ taskId }) => {
           if (res.message.includes("401")) {
             handleSignOut();
           }
-          console.log(res.stack);
         },
       }
     );

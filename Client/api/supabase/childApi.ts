@@ -26,7 +26,6 @@ export const childApi = {
   }: {
     queryKey: GetChildByParentIdQueryKey;
   }) => {
-    console.log(`${BASE_URL}/parent?parentId=${queryKey[1].id}`);
     const result = await axiosInstance.get(
       `${BASE_URL}/parent?parentId=${queryKey[1].id}`
     );

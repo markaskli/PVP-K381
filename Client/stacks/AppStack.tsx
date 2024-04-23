@@ -17,22 +17,27 @@ import { AddChildPage } from "../components/pages/child-insertion/AddChildPage";
 import { useAppContext } from "../contexts/appContext";
 import { ChildrenPreviewPage } from "../components/pages/children-preview/ChildrenPreviewPage";
 import { GroupPreviewPage } from "../components/pages/group-preview/GroupPreviewPage";
+import { ChildrenInGroupPage } from "../components/pages/children-in-group-preview/ChildrenInGroupPreviewPage";
+import { ParentTaskPreviewPage } from "../components/pages/parent-task-preview/ParentTaskPreviewPage";
 
 const Stack = createNativeStackNavigator();
 
 export const AppStack = () => {
-  const { setUser } = useAppContext();
-  const [userRole, setUserRole] = useState<number | null>(null);
+  const { setUser, selectUser } = useAppContext();
   useEffect(() => {
     const getRole = async () => {
       const value = await AsyncStorage.getItem("user");
-      const { id, roleId } = JSON.parse(value);
+      const { id, roleId, points } = JSON.parse(value);
       if (!value) return;
-      setUserRole(roleId);
-      setUser(id);
+      setUser({
+        id,
+        roleId,
+        points,
+      });
     };
     getRole();
   }, []);
+  const userRole = selectUser.roleId;
   if (!userRole) return;
 
   return (
@@ -63,9 +68,17 @@ export const AppStack = () => {
       <Stack.Screen name='Group' component={GroupPage} />
       <Stack.Screen name='JoinGroup' component={GroupJoin} />
       <Stack.Screen name='TaskPreview' component={TaskPreviewPage} />
+      <Stack.Screen
+        name='ParentTaskPreview'
+        component={ParentTaskPreviewPage}
+      />
       <Stack.Screen name='ChangePassword' component={ChangePasswordPage} />
       <Stack.Screen name='AddChildPage' component={AddChildPage} />
       <Stack.Screen name='ChildrenPreview' component={ChildrenPreviewPage} />
+      <Stack.Screen
+        name='ChildrenInGroupPreview'
+        component={ChildrenInGroupPage}
+      />
       <Stack.Screen name='GroupPreview' component={GroupPreviewPage} />
     </Stack.Navigator>
   );

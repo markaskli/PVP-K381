@@ -56,13 +56,13 @@ export const LoginPage: React.FC = () => {
       {
         onSuccess: async (res) => {
           await AsyncStorage.setItem("token", res.token);
-          const { username, roleId, id } = res;
+          const { username, roleId, id, points } = res;
           await AsyncStorage.setItem(
             "user",
-            JSON.stringify({ username, id, roleId })
+            JSON.stringify({ username, id, roleId, points })
           );
           changeIsLoggedIn(true);
-          setUser({ id });
+          setUser({ id, roleId, points, username });
           navigation.navigate("Dashboard");
         },
         onError: (res) => {

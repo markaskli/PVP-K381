@@ -5,6 +5,13 @@ import { Child } from "../components/types/types";
 // Create a Context
 const AppContext = createContext({});
 
+export type UserData = {
+  id: string;
+  roleId: string;
+  points: string;
+  username: string;
+};
+
 type AppState = {
   authenticationAction: AuthenticationActionTypes | null;
   childInsertion: Child[];
@@ -44,12 +51,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
-  const setUser = (id: string) => {
+  const setUser = (userData: UserData) => {
     setState((prevState) => ({
       ...prevState,
       user: {
         ...prevState.user,
-        id,
+        ...userData,
       },
     }));
   };

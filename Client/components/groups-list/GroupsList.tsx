@@ -43,7 +43,7 @@ export const GroupsList: React.FC<GroupsListProps> = ({
   };
 
   const handleRoomPreviewPath = (id: string) => {
-    setSelectedGroup(id);
+    // setSelectedGroup(id);
     navigation.navigate("GroupPreview", { groupId: id });
   };
 

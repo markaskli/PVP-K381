@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, SafeAreaView, Image, Text, StyleSheet } from "react-native";
+import { View, Image, Text, StyleSheet } from "react-native";
 import { styled } from "nativewind";
 import { BaseTextField } from "../../input/BaseTextField";
 import { useForm } from "react-hook-form";
@@ -23,8 +23,6 @@ import { useGetChildRooms } from "../../pages/groups/groupsQueries";
 import { GroupsList } from "../../groups-list/GroupsList";
 
 const StyledView = styled(View);
-const StyledImage = styled(Image);
-const StyledSafeAreaView = styled(SafeAreaView);
 
 export const ProfileStudent = () => {
   const { changeIsLoggedIn } = useAppContext();
@@ -41,7 +39,6 @@ export const ProfileStudent = () => {
 
   const {
     control,
-    getValues,
     setValue,
     formState: { errors },
   } = methods;
@@ -49,8 +46,9 @@ export const ProfileStudent = () => {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem("user");
-      const { username } = JSON.parse(userData);
+      const { username, points } = JSON.parse(userData);
       setValue("name", username);
+      setValue("capturedPoints", points.toString());
     };
     getUserData();
   }, []);
@@ -66,19 +64,15 @@ export const ProfileStudent = () => {
     navigation.navigate("ChangePassword");
   };
 
-  const submitForm = () => {
-    const values = getValues();
-    const form = profileFormSchema.parse(values);
-  };
   return (
     <BasePage>
-      <StyledView className='flex flex-col gap-3'>
+      <StyledView className='flex flex-col gap-3 pt-3'>
         <View style={styles.inlineWrapper}>
-          <View style={styles.profileIconContainer}>
-            <StyledImage
-              style={styles.profileIconContainer}
-              className='w-9 h-9'
-              source={require("../../pages/students/registration/liftingHealthy.svg")}
+          <View>
+            <Image
+              style={{ width: 80, height: 80 }}
+              alt='profile'
+              source={require("../../../assets/profile-bigger.png")}
             />
           </View>
           <StyledView className='flex flex-col gap-3'>
@@ -90,15 +84,15 @@ export const ProfileStudent = () => {
                 errorMessage={errors.name?.message}
               />
             </StyledView>
-            {/* <StyledView className='mb-4'>
+            <StyledView className='mb-4'>
               <BaseTextField
                 control={control}
+                disabled={true}
                 formField={ProfileField.CAPTURED_POINTS}
                 label={"Surinkti taškai"}
-                type='number'
                 errorMessage={errors.capturedPoints?.message}
               />
-            </StyledView> */}
+            </StyledView>
           </StyledView>
         </View>
         <View>

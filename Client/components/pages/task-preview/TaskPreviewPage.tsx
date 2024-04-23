@@ -1,8 +1,9 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
 import { TaskPreview } from "../../task-preview/TaskPreview";
-import { useGetTaskById } from "../task/taskQueries";
+import { TaskCompletion } from "../../types/types";
+import { useGetAssignedTaskById } from "../tasks/tasksQueries";
 
 type RootStackParamList = {
   TaskPreview: { taskId: string }; // Define the parameter type for TaskEdit screen
@@ -14,11 +15,28 @@ export const TaskPreviewPage = () => {
   const route = useRoute<TaskPreviewScreenRouteProp>();
   const { taskId } = route.params || {};
 
-  const { data: task } = useGetTaskById(taskId);
-  if (!task) return;
+  const { data: tasks } = useGetAssignedTaskById(taskId);
+  console.log(tasks);
+
+  const taskData = useMemo(() => {
+    if (!tasks) return;
+    const initialTask = tasks[0];
+    const childCompletionStates: TaskCompletion[] = tasks.map((task) => ({
+      isConfirmedByParent: task.isConfirmedByParent,
+      isConfirmedByChild: task.isConfirmedByChild,
+      childId: task.assignedToChildId,
+    }));
+
+    return {
+      task: initialTask,
+      completions: childCompletionStates,
+    };
+  }, [tasks]);
+
+  if (!taskData) return;
   return (
     <View>
-      <TaskPreview task={task} />
+      <TaskPreview task={taskData} />
     </View>
   );
 };

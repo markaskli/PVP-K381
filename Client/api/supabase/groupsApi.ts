@@ -1,5 +1,6 @@
 import { QueryKey } from "../../react-query/queryKeys";
 import axiosInstance from "../axios";
+import { ChildInGroupRemoveRequest } from "./types";
 
 const BASE_URL = `http://localhost:5228/api/Room`;
 
@@ -26,6 +27,17 @@ export const groupApi = {
     const result = await axiosInstance.post(
       `${BASE_URL}/join/?invitationCode=${code}`
     );
+    return result.data;
+  },
+  removeChildFromGroup: async ({
+    information,
+  }: {
+    information: ChildInGroupRemoveRequest;
+  }) => {
+    const result = await axiosInstance.delete(
+      `${BASE_URL}/removeChild?roomId=${information.userId}&childId=${information.childId}`
+    );
+
     return result.data;
   },
   getRooms: async () => {

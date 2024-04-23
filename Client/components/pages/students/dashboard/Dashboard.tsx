@@ -49,9 +49,11 @@ export const Dashboard = () => {
           <GroupsList onlyList joinGroup groups={rooms} />
         </View>
       </ScrollView>
-      <BasePage>
-        <TaskList isStudent tasks={filteredTasks} />
-      </BasePage>
+      <ScrollView>
+        <BasePage>
+          <TaskList isStudent tasks={filteredTasks} />
+        </BasePage>
+      </ScrollView>
     </StyledView>
   );
 };

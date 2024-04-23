@@ -59,6 +59,7 @@ export const BaseTextField: React.FC<BaseTextFieldProps> = ({
         <View>
           <Text style={styles.label}>{label}</Text>
           <TextInput
+            editable={!disabled}
             style={styles.input}
             onChangeText={field.onChange}
             onBlur={field.onBlur}

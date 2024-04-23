@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import { PRIMARY_COLOR } from "../../../utils/constants";
 import { FormPage } from "../../base-page/FormPage";
 import { FormProvider, useForm } from "react-hook-form";
@@ -66,47 +72,48 @@ export const ParentsSignUpPage: React.FC = ({}) => {
   };
 
   return (
-    <FormPage title={"Registracija"}>
-      <BasePage>
-        <FormProvider {...methods}>
-          <View style={styles.inlineWrapper}>
-            <StyledView className='mb-4 w-1/2'>
-              <BaseTextField
-                control={control}
-                formField={ParentSignUpField.NAME}
-                label={"Vardas"}
-                errorMessage={errors.name?.message}
-              />
-            </StyledView>
-            <StyledView className='mb-4 w-1/2'>
-              <BaseTextField
-                control={control}
-                formField={ParentSignUpField.SURNAME}
-                label={"Pavardė"}
-                errorMessage={errors.surname?.message}
-              />
-            </StyledView>
-          </View>
+    <ScrollView>
+      <FormPage parentOrTeacher title={"Registracija"}>
+        <BasePage>
+          <FormProvider {...methods}>
+            <View style={styles.inlineWrapper}>
+              <StyledView className='mb-4 w-1/2'>
+                <BaseTextField
+                  control={control}
+                  formField={ParentSignUpField.NAME}
+                  label={"Vardas"}
+                  errorMessage={errors.name?.message}
+                />
+              </StyledView>
+              <StyledView className='mb-4 w-1/2'>
+                <BaseTextField
+                  control={control}
+                  formField={ParentSignUpField.SURNAME}
+                  label={"Pavardė"}
+                  errorMessage={errors.surname?.message}
+                />
+              </StyledView>
+            </View>
 
-          <View style={styles.inlineWrapper}>
-            <StyledView className='mb-4 w-1/2'>
-              <BaseTextField
-                control={control}
-                formField={ParentSignUpField.EMAIL}
-                label={"El. paštas"}
-                errorMessage={errors.email?.message}
-              />
-            </StyledView>
-            <StyledView className='mb-4 w-1/2'>
-              <BaseTextField
-                control={control}
-                formField={ParentSignUpField.PHONE_NUMBER}
-                label={"Telefono numeris"}
-                errorMessage={errors.phoneNumber?.message}
-              />
-            </StyledView>
-          </View>
-          {/* <StyledView className='mb-4'>
+            <View style={styles.inlineWrapper}>
+              <StyledView className='mb-4 w-1/2'>
+                <BaseTextField
+                  control={control}
+                  formField={ParentSignUpField.EMAIL}
+                  label={"El. paštas"}
+                  errorMessage={errors.email?.message}
+                />
+              </StyledView>
+              <StyledView className='mb-4 w-1/2'>
+                <BaseTextField
+                  control={control}
+                  formField={ParentSignUpField.PHONE_NUMBER}
+                  label={"Telefono numeris"}
+                  errorMessage={errors.phoneNumber?.message}
+                />
+              </StyledView>
+            </View>
+            {/* <StyledView className='mb-4'>
           <BaseDatePicker
             name={ParentSignUpField.BIRTH_DATE}
             control={control}
@@ -114,33 +121,34 @@ export const ParentsSignUpPage: React.FC = ({}) => {
             label={"Gimimo data"}
           />
         </StyledView> */}
-          <StyledView className='mb-4 w-full'>
-            <BaseTextField
-              control={control}
-              type='password'
-              formField={ParentSignUpField.PASSWORD}
-              label={"Slaptažodis"}
-              errorMessage={errors.password?.message}
-            />
-          </StyledView>
-          <StyledView className='mb-4 w-full'>
-            <BaseTextField
-              control={control}
-              type='password'
-              formField={ParentSignUpField.REPEAT_PASSWORD}
-              label={"Pakartokite slaptažodį"}
-              errorMessage={errors.repeatPassword?.message}
-            />
-          </StyledView>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit(submitForm)}
-          >
-            <Text style={styles.buttonText}>Registruotis</Text>
-          </TouchableOpacity>
-        </FormProvider>
-      </BasePage>
-    </FormPage>
+            <StyledView className='mb-4 w-full'>
+              <BaseTextField
+                control={control}
+                type='password'
+                formField={ParentSignUpField.PASSWORD}
+                label={"Slaptažodis"}
+                errorMessage={errors.password?.message}
+              />
+            </StyledView>
+            <StyledView className='mb-4 w-full'>
+              <BaseTextField
+                control={control}
+                type='password'
+                formField={ParentSignUpField.REPEAT_PASSWORD}
+                label={"Pakartokite slaptažodį"}
+                errorMessage={errors.repeatPassword?.message}
+              />
+            </StyledView>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit(submitForm)}
+            >
+              <Text style={styles.buttonText}>Registruotis</Text>
+            </TouchableOpacity>
+          </FormProvider>
+        </BasePage>
+      </FormPage>
+    </ScrollView>
   );
 };
 

@@ -18,11 +18,13 @@ import { Children } from "../types/types";
 
 type GroupsListProps = {
   childrens: Children[];
+  groupId?: string;
   onlyList?: boolean;
 };
 
 export const ChildrensList: React.FC<GroupsListProps> = ({
   childrens,
+  groupId,
   onlyList = false,
 }) => {
   const styles = generateStyling(onlyList);
@@ -31,7 +33,16 @@ export const ChildrensList: React.FC<GroupsListProps> = ({
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleChildrenProfilePath = (id: string) => {
-    navigation.navigate("ChildrenPreview", { childrenId: id });
+    if (groupId) {
+      navigation.navigate("ChildrenInGroupPreview", {
+        childId: id,
+        userId: groupId,
+      });
+    } else {
+      navigation.navigate("ChildrenPreview", {
+        childrenId: id,
+      });
+    }
   };
 
   const handleAddChildPath = () => {

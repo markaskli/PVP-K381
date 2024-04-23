@@ -2,8 +2,10 @@ import { StyleSheet } from "react-native";
 
 export const convertStyles = ({
   backgroundColor,
+  styles,
 }: {
   backgroundColor: string;
+  styles: { [key: string]: string | number };
 }) => {
   return StyleSheet.create({
     button: {
@@ -16,6 +18,7 @@ export const convertStyles = ({
       color: "#fff",
       borderColor: "transparent",
       backgroundColor,
+      ...styles,
     },
   });
 };

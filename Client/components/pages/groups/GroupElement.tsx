@@ -21,7 +21,6 @@ export const GroupElement: React.FC<GroupElementProps> = ({
       },
       {
         onSuccess: () => {
-          console.log("Deleted successfully");
           refetchRooms();
         },
         onError: (err) => {

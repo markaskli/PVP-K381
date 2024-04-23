@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { BasePage } from "../../base-page/BasePage";
 import { DashboardNavbar } from "./DashboardNavbar";
+import { RoomFilter } from "../../room-filter/RoomFilter";
 
 export const Dashboard: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -31,7 +32,10 @@ export const Dashboard: React.FC<{ navigation: any }> = ({ navigation }) => {
             +
           </Text>
         </View>
-        <ScrollView>
+        <View>
+          <RoomFilter />
+        </View>
+        <ScrollView contentContainerStyle={{ paddingBottom: 400 }}>
           <TasksPage userId={userId} />
         </ScrollView>
       </BasePage>

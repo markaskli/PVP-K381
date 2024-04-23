@@ -1,10 +1,17 @@
 import React, { useEffect, useMemo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import { styled } from "nativewind";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateTaskForRoom, useGetTaskById } from "./taskQueries";
+import { useCreateTaskForRoom } from "./taskQueries";
 import { useNavigation } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   CreateTaskField,
   createTaskFormSchema,
@@ -21,6 +28,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSignOut } from "../dashboard/dashboardQueries";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../utils/navigations";
+import { useGetAssignedTaskById } from "../tasks/tasksQueries";
 
 const StyledView = styled(View);
 
@@ -32,6 +40,7 @@ type TaskFormProps = {
 export const TaskForm: React.FC<TaskFormProps> = ({ taskId, refetch }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const queryClient = useQueryClient();
 
   const createTask = useCreateTaskForRoom();
   const { data: rooms } = useGetRooms();
@@ -42,7 +51,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ taskId, refetch }) => {
     mode: "all",
   });
 
-  const { data: task } = useGetTaskById(taskId);
+  const { data: task } = useGetAssignedTaskById(taskId);
 
   const {
     handleSubmit,
@@ -99,6 +108,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ taskId, refetch }) => {
       },
       {
         onSuccess: async (res) => {
+          queryClient.invalidateQueries({ queryKey: ["GET_TASKS_BY_USER"] });
           navigation.goBack();
           refetch?.();
         },
@@ -113,56 +123,58 @@ export const TaskForm: React.FC<TaskFormProps> = ({ taskId, refetch }) => {
   };
 
   return (
-    <FormPage parentOrTeacher title='Sukurti užduotį'>
-      <FormProvider {...methods}>
-        <StyledView className='mb-5'>
-          <StyledView className='mb-4'>
-            <BaseSelectionField
-              items={roomOptions}
-              formField={CreateTaskField.GROUP}
-              label={"Grupė"}
-            />
+    <ScrollView>
+      <FormPage parentOrTeacher title='Sukurti užduotį'>
+        <FormProvider {...methods}>
+          <StyledView className='mb-5'>
+            <StyledView className='mb-4'>
+              <BaseSelectionField
+                items={roomOptions}
+                formField={CreateTaskField.GROUP}
+                label={"Grupė"}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={CreateTaskField.NAME}
+                label={"Užduoties pavadinimas"}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                formField={CreateTaskField.DESCRIPTION}
+                label={"Užduoties aprašymas"}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseDatePicker
+                formField={CreateTaskField.DUE_DATE}
+                control={control}
+                format='yyyy-MM-dd'
+                className='mb-4'
+                label={"Užduoties atlikimo data"}
+              />
+            </StyledView>
+            <StyledView className='mb-4'>
+              <BaseTextField
+                control={control}
+                type='numeric'
+                formField={CreateTaskField.POINTS}
+                label={"Atliktos užduoties taškai"}
+              />
+            </StyledView>
           </StyledView>
-          <StyledView className='mb-4'>
-            <BaseTextField
-              control={control}
-              formField={CreateTaskField.NAME}
-              label={"Užduoties pavadinimas"}
-            />
-          </StyledView>
-          <StyledView className='mb-4'>
-            <BaseTextField
-              control={control}
-              formField={CreateTaskField.DESCRIPTION}
-              label={"Užduoties aprašymas"}
-            />
-          </StyledView>
-          <StyledView className='mb-4'>
-            <BaseDatePicker
-              formField={CreateTaskField.DUE_DATE}
-              control={control}
-              format='yyyy-MM-dd'
-              className='mb-4'
-              label={"Užduoties atlikimo data"}
-            />
-          </StyledView>
-          <StyledView className='mb-4'>
-            <BaseTextField
-              control={control}
-              type='numeric'
-              formField={CreateTaskField.POINTS}
-              label={"Atliktos užduoties taškai"}
-            />
-          </StyledView>
-        </StyledView>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit(submitForm)}
-        >
-          <Text style={styles.buttonText}>Sukurti</Text>
-        </TouchableOpacity>
-      </FormProvider>
-    </FormPage>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit(submitForm)}
+          >
+            <Text style={styles.buttonText}>Sukurti</Text>
+          </TouchableOpacity>
+        </FormProvider>
+      </FormPage>
+    </ScrollView>
   );
 };
 

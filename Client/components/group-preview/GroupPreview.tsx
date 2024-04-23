@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { LIGHER_GREY_COLOR, PRIMARY_COLOR } from "../../utils/constants";
+import { LIGHER_GREY_COLOR } from "../../utils/constants";
 import { BasePage } from "../base-page/BasePage";
 import { Button } from "../buttons/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Group } from "../pages/groups/types/types";
-import {
-  useDeleteRoom,
-  useGetRoomById,
-  useGetRooms,
-} from "../pages/groups/groupsQueries";
+import { useDeleteRoom, useGetRooms } from "../pages/groups/groupsQueries";
 import { ChildrensList } from "../childrens-list/ChildrensList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAppContext } from "../../contexts/appContext";
@@ -88,12 +84,16 @@ export const GroupPreview: React.FC<ChildrenPreviewProps> = ({
         {role !== 2 && (
           <View style={styles.textContainer}>
             <Text style={styles.label}>Vaikai</Text>
-            <ChildrensList onlyList childrens={group.children} />
+            <ChildrensList
+              groupId={group.id}
+              onlyList
+              childrens={group.children}
+            />
           </View>
         )}
         <View style={styles.textContainer}>
           <Text style={styles.label}>Užduočių skaičius</Text>
-          <Text style={styles.description}>{group.tasks.length}</Text>
+          <Text style={styles.description}>{group.tasks?.length}</Text>
         </View>
         {role !== 2 && (
           <View style={styles.footer}>

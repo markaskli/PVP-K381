@@ -10,5 +10,7 @@ export type RootStackParamList = {
   ChangePassword: undefined;
   AddChildPage: undefined;
   ChildrenPreview: undefined | { childrenId: string };
+  ChildrenInGroupPreview: undefined | { childId: string; userId: string };
   GroupPreview: undefined | { groupId: string };
+  ParentTaskPreview: { taskId: string };
 };

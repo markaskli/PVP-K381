@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FormPage } from "../../../base-page/FormPage";
 import { styled } from "nativewind";
 import { ACCENT_COLOR } from "../../../../utils/constants";
@@ -17,8 +12,11 @@ import {
   defaultCreateTaskFormValues,
 } from "./model";
 import { BaseTextField } from "../../../input/BaseTextField";
+import { useQueryClient } from "@tanstack/react-query";
 
 const StyledView = styled(View);
+
+const queryClient = useQueryClient();
 
 export const CreateTask: React.FC<{ navigation: any }> = ({ navigation }) => {
   const createTask = useCreateTask();
@@ -46,6 +44,7 @@ export const CreateTask: React.FC<{ navigation: any }> = ({ navigation }) => {
       },
       {
         onSuccess: async (res) => {
+          queryClient.invalidateQueries({ queryKey: ["GET_TASKS_BY_USER"] });
           navigation.navigate("Dashboard");
         },
       }

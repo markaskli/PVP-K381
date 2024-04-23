@@ -14,9 +14,9 @@ export const useGetChildTasks = (userId: string) => {
   });
 };
 
-export const useGetTaskById = (id: string) => {
+export const useGetAssignedTaskById = (id: string) => {
   return useQuery({
-    queryKey: [QueryKey.GET_TASK_BY_ID, { id }],
-    queryFn: tasksApi.getTasksById,
+    queryKey: [QueryKey.GET_ASSIGNED_TASK_BY_ID, { id }],
+    queryFn: tasksApi.getAssignedTaskById,
   });
 };

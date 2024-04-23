@@ -1,25 +1,26 @@
 import React from "react";
 import { styled } from "nativewind";
-import { StyleSheet, TouchableOpacity, View, SafeAreaView } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { ACCENT_COLOR, PRIMARY_COLOR } from "../../utils/constants";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/navigations";
-const StyledView = styled(View);
 
 type StudentHeaderProps = {};
-
 
 export const StudentHeader: React.FC<StudentHeaderProps> = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Profile")}
-        style={styles.profileBubble}
-      ></TouchableOpacity>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <Image
+          style={styles.image}
+          alt='reward'
+          source={require("../../assets/profile.png")}
+        />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -32,11 +33,11 @@ const styles = StyleSheet.create({
     backgroundColor: PRIMARY_COLOR,
     justifyContent: "flex-end",
     alignItems: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
   },
-  profileBubble: {
+  image: {
     width: 30,
-    height: 30,
-    borderRadius: 20,
-    backgroundColor: ACCENT_COLOR,
+    objectFit: "contain",
   },
 });

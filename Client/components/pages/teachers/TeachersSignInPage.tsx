@@ -64,7 +64,7 @@ export const TeachersSignInPage: React.FC = ({}) => {
     );
   };
   return (
-    <FormPage title='Prisijungimas'>
+    <FormPage parentOrTeacher title='Prisijungimas'>
       <FormProvider {...methods}>
         <View style={styles.inputsContainer}>
           <StyledView className='mb-4'>

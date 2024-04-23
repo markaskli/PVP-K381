@@ -15,6 +15,11 @@ export type CreateTaskData = {
   assignedToId: string;
 };
 
+export type CompleteTaskData = {
+  id: string;
+  isConfirmedByChild: boolean;
+};
+
 export type CreatedTask = {
   id: number;
   name: string;
@@ -22,6 +27,8 @@ export type CreatedTask = {
   points: number;
   isFinished: boolean;
   dueDate: string;
+  taskName: string;
+  taskId: string;
   createdById: string;
   assignedToId: string;
   assignedToRoomId?: string;
@@ -63,4 +70,9 @@ export type RegisterChildRequest = {
   registrationCode: string;
   newPassword: string;
   currentPassword: string;
+};
+
+export type ChildInGroupRemoveRequest = {
+  userId: string;
+  childId: string;
 };

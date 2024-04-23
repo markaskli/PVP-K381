@@ -1,45 +1,117 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { CreatedTask } from "../../api/supabase/types";
-import {
-  GREY_COLOR,
-  LIGHER_GREY_COLOR,
-  PRIMARY_COLOR,
-} from "../../utils/constants";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { LIGHER_GREY_COLOR, PRIMARY_COLOR } from "../../utils/constants";
 import { BasePage } from "../base-page/BasePage";
 import { Button } from "../buttons/Button";
+import { styled } from "nativewind";
 import { useNavigation } from "@react-navigation/native";
+import { PreviewTask } from "../types/types";
+import { useCompleteTaskChild } from "../../api/supabase/queries/tasks";
+import { StatusLabel } from "../status-label/StatusLabel";
+import { format, startOfDay } from "date-fns";
+
+const StyledView = styled(View);
 
 type TaskPreviewProps = {
-  task: CreatedTask;
+  task: PreviewTask;
 };
 
-export const TaskPreview: React.FC<TaskPreviewProps> = ({ task }) => {
+export const TaskPreview: React.FC<TaskPreviewProps> = ({ task: taskData }) => {
+  const { task } = taskData;
   const navigation = useNavigation();
+
+  const completeTask = useCompleteTaskChild();
+
+  const isPastCompletionDate =
+    startOfDay(new Date()) > startOfDay(new Date(task.dueDate));
+
+  const handleTaskCompletion = () => {
+    if (isPastCompletionDate) return;
+    completeTask.mutate(
+      {
+        taskId: task.id.toString(),
+      },
+      {
+        onSuccess: () => {
+          console.log("success");
+        },
+        onError: (res) => {
+          console.log(res);
+        },
+      }
+    );
+  };
+
   return (
     <View style={styles.container}>
       <BasePage>
-        <TouchableOpacity
-          style={styles.header}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backText}>Atgal</Text>
-        </TouchableOpacity>
+        <StyledView className='flex flex-row justify-between'>
+          <TouchableOpacity
+            style={styles.header}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backText}>Atgal</Text>
+          </TouchableOpacity>
+          <StyledView>
+            <StatusLabel isFinished={task.isFinished} />
+          </StyledView>
+        </StyledView>
+
         <View style={styles.textContainer}>
           <Text style={styles.label}>Užduoties aprašymas</Text>
-          <Text style={styles.description}>{task.name}</Text>
+          <StyledView className='flex flex-row gap-1 items-center'>
+            <Image
+              style={styles.image}
+              source={require("../../assets/task.png")}
+            />
+            <Text style={styles.description}>{task.name}</Text>
+          </StyledView>
         </View>
-        <View>
+        <View style={styles.textContainer}>
           <Text style={styles.label}>Užduoties atlikimo taškai</Text>
-          <Text style={styles.description}>{task.points}</Text>
+          <StyledView className='flex flex-row gap-1 items-center'>
+            <Image
+              style={styles.image}
+              source={require("../../assets/reward.png")}
+            />
+            <Text style={styles.description}>{task.points}</Text>
+          </StyledView>
         </View>
-        <View style={styles.footer}>
-          <TouchableOpacity>
-            <Button color={PRIMARY_COLOR}>
+        <View style={styles.textContainer}>
+          <Text style={styles.label}>Užduoties atlikimo terminas</Text>
+          <StyledView className='flex flex-row gap-1 items-center'>
+            <Image
+              style={styles.image}
+              source={require("../../assets/clock.png")}
+            />
+            <Text style={styles.description}>
+              {format(new Date(task.dueDate), "yyyy-mm-dd")}
+            </Text>
+          </StyledView>
+        </View>
+        {!task.isFinished && (
+          <View style={styles.footer}>
+            <Button
+              disabled={isPastCompletionDate}
+              onClick={handleTaskCompletion}
+              color={PRIMARY_COLOR}
+            >
               <Text>Atlikti užduotį</Text>
             </Button>
-          </TouchableOpacity>
-        </View>
+          </View>
+        )}
+        {!task.isFinished && isPastCompletionDate && (
+          <StyledView className='flex flex-row gap-1 mt-2 items-center'>
+            <Image
+              style={styles.image}
+              source={require("../../assets/info.png")}
+            />
+            <Text>
+              Užduotis negali būti užfiksuota kaip baigta dėl pasibaigusio
+              termino.
+            </Text>
+          </StyledView>
+        )}
       </BasePage>
     </View>
   );
@@ -70,5 +142,10 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 40,
+  },
+  image: {
+    width: 20,
+    height: 20,
+    objectFit: "contain",
   },
 });

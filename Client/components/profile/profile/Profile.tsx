@@ -58,7 +58,6 @@ export const ProfilePage = () => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem("user");
       const { name, surname, email, id } = JSON.parse(userData);
-      console.log(userData);
       setValue("name", name);
       setValue("surname", surname);
       setValue("email", email);
@@ -95,11 +94,18 @@ export const ProfilePage = () => {
     <BasePage>
       <StyledView className='flex flex-col gap-3'>
         <View style={styles.inlineWrapper}>
-          <View style={styles.profileIconContainer}>
-            <StyledImage
-              style={styles.profileIconContainer}
-              className='w-9 h-9'
-              source={require("../../pages/students/registration/liftingHealthy.svg")}
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "40%",
+            }}
+          >
+            <Image
+              style={{ width: 100, height: 100 }}
+              alt='profile'
+              source={require("../../../assets/profile-bigger.png")}
             />
           </View>
           <StyledView className='flex flex-col gap-3'>

@@ -23,9 +23,6 @@ export const TaskPage = () => {
   const route = useRoute<TaskEditScreenRouteProp>();
   const { taskId } = route.params || {};
 
-  console.log(tasksChild);
-  console.log(tasksParent);
-
   return (
     <View>
       <TaskForm

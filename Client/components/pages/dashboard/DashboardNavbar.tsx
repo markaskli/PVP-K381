@@ -1,10 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import {
-  ACCENT_COLOR,
-  GREY_COLOR,
-  PRIMARY_COLOR,
-} from "../../../utils/constants";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
+import { ACCENT_COLOR, GREY_COLOR } from "../../../utils/constants";
 import { styled } from "nativewind";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -49,10 +45,13 @@ export const DashboardNavbar = () => {
           <Text style={styles.buttonText}>{link.name}</Text>
         </StyledButton>
       ))}
-      <StyledButton
-        onPress={handleProfileNavigation}
-        style={styles.bubble}
-      ></StyledButton>
+      <StyledButton onPress={handleProfileNavigation}>
+        <Image
+          style={styles.image}
+          alt='reward'
+          source={require("../../../assets/profile.png")}
+        />
+      </StyledButton>
     </View>
   );
 };
@@ -92,10 +91,8 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "700",
   },
-  bubble: {
+  image: {
     width: 35,
     height: 35,
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 20,
   },
 });

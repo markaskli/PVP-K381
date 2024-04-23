@@ -8,10 +8,10 @@ export enum StudentRegistrationField {
 }
 
 export const studentRegistrationFormSchema = z.object({
-  registrationCode: z.string(),
-  username: z.string(),
-  currentPassword: z.string(),
-  newPassword: z.string(),
+  registrationCode: z.string().min(1, "Šis laukelis yra privalomas"),
+  username: z.string().min(1, "Šis laukelis yra privalomas"),
+  currentPassword: z.string().min(1, "Šis laukelis yra privalomas"),
+  newPassword: z.string().min(1, "Šis laukelis yra privalomas"),
 });
 
 export const defaultStudentRegistrationFormValues = {

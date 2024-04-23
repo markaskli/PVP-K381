@@ -12,17 +12,24 @@ export enum TeacherSignUpField {
   PROFESSION = "profession",
 }
 
-export const signUpFormSchema = z.object({
-  name: z.string(),
-  surname: z.string(),
-  password: z.string(),
-  repeatPassword: z.string(),
-  birthDate: z.date().transform((val) => val.toISOString()),
-  email: z.string(),
-  phoneNumber: z.string(),
-  school: z.string(),
-  profession: z.string(),
-});
+export const signUpFormSchema = z
+  .object({
+    name: z.string().min(1, "Šis laukelis yra privalomas"),
+    surname: z.string().min(1, "Šis laukelis yra privalomas"),
+    password: z.string().min(1, "Šis laukelis yra privalomas"),
+    repeatPassword: z.string().min(1, "Šis laukelis yra privalomas"),
+    birthDate: z.date().transform((val) => val.toISOString()),
+    email: z.string().min(1, "Šis laukelis yra privalomas"),
+    phoneNumber: z.string().min(1, "Šis laukelis yra privalomas"),
+    school: z.string().min(1, "Šis laukelis yra privalomas"),
+    profession: z.string().min(1, "Šis laukelis yra privalomas"),
+  })
+  .refine((data) => {
+    if (data.password !== data.repeatPassword) {
+      return false;
+    }
+    return true;
+  });
 
 export const defaultTeacherSignUpFormValues = {
   name: "",
@@ -31,7 +38,7 @@ export const defaultTeacherSignUpFormValues = {
   repeatPassword: "",
   email: "",
   birthDate: new Date(),
-  phoneNumber: [],
+  phoneNumber: "",
   school: "",
   profession: "",
 };

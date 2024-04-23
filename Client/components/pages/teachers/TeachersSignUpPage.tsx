@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { PRIMARY_COLOR } from "../../../utils/constants";
 import { FormPage } from "../../base-page/FormPage";
 import { FormProvider, useForm } from "react-hook-form";
@@ -13,12 +19,12 @@ import {
 import { useRegisterTeaher } from "./authenticationQueries";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BaseTextField } from "../../input/BaseTextField";
-import { BaseDatePicker } from "../../input/BaseDatePicker";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../utils/navigations";
 import { useAppContext } from "../../../contexts/appContext";
 import { useNavigation } from "@react-navigation/native";
 import { BasePage } from "../../base-page/BasePage";
+import { BaseDatePicker } from "../../input/BaseDatePicker";
 
 const StyledView = styled(View);
 
@@ -67,88 +73,89 @@ export const TeachersSignUpPage: React.FC = ({}) => {
   };
   return (
     <FormPage parentOrTeacher title='Registracija'>
-      <BasePage>
-        <FormProvider {...methods}>
-          <View style={styles.inlineWrapper}>
-            <StyledView className='mb-4 w-1/2'>
+      <ScrollView contentContainerStyle={{ paddingBottom: 240 }}>
+        <BasePage>
+          <FormProvider {...methods}>
+            <View style={styles.inlineWrapper}>
+              <StyledView className='mb-4 w-1/3'>
+                <BaseTextField
+                  control={control}
+                  formField={TeacherSignUpField.NAME}
+                  label={"Vardas"}
+                  errorMessage={errors.name?.message}
+                />
+              </StyledView>
+              <StyledView className='mb-4 w-1/3'>
+                <BaseTextField
+                  control={control}
+                  formField={TeacherSignUpField.SURNAME}
+                  label={"Pavardė"}
+                  errorMessage={errors.surname?.message}
+                />
+              </StyledView>
+            </View>
+            <StyledView className='mb-4 w-full'>
               <BaseTextField
                 control={control}
-                formField={TeacherSignUpField.NAME}
-                label={"Vardas"}
-                errorMessage={errors.name?.message}
+                formField={TeacherSignUpField.EMAIL}
+                label={"El. pašas"}
+                errorMessage={errors.email?.message}
               />
             </StyledView>
-            <StyledView className='mb-4 w-1/2'>
+            <StyledView className='mb-4 w-full'>
               <BaseTextField
                 control={control}
-                formField={TeacherSignUpField.SURNAME}
-                label={"Pavardė"}
-                errorMessage={errors.surname?.message}
+                formField={TeacherSignUpField.PHONE_NUMBER}
+                label={"Telefono numeris"}
+                errorMessage={errors.phoneNumber?.message}
               />
             </StyledView>
-          </View>
-          <StyledView className='mb-4 w-full'>
-            <BaseTextField
-              control={control}
-              formField={TeacherSignUpField.EMAIL}
-              label={"El. pašas"}
-              errorMessage={errors.email?.message}
-            />
-          </StyledView>
-          <StyledView className='mb-4 w-full'>
-            <BaseTextField
-              control={control}
-              formField={TeacherSignUpField.PHONE_NUMBER}
-              label={"Telefono numeris"}
-              errorMessage={errors.phoneNumber?.message}
-            />
-          </StyledView>
-          <View style={styles.inlineWrapper}>
+            <View style={styles.inlineWrapper}>
+              <StyledView className='mb-4 w-1/3'>
+                <BaseDatePicker
+                  formField={TeacherSignUpField.BIRTH_DATE}
+                  control={control}
+                  format='yyyy-MM-dd'
+                  label={"Gimimo data"}
+                  errorMessage={errors.birthDate?.message}
+                />
+              </StyledView>
+              <StyledView className='mb-4 w-1/3'>
+                <BaseTextField
+                  control={control}
+                  formField={TeacherSignUpField.SCHOOL}
+                  label={"Mokykla"}
+                  errorMessage={errors.school?.message}
+                />
+              </StyledView>
+            </View>
             <StyledView className='mb-4'>
-              {/* <BaseDatePicker
-                formField={TeacherSignUpField.BIRTH_DATE}
+              <BaseTextField
                 control={control}
-                format='yyyy-MM-dd'
-                className='mb-4'
-                label={"Gimimo data"}
-                errorMessage={errors.birthDate?.message}
-              /> */}
+                formField={TeacherSignUpField.PASSWORD}
+                label={"Slaptažodis"}
+                type='password'
+                errorMessage={errors.password?.message}
+              />
             </StyledView>
             <StyledView className='mb-4'>
               <BaseTextField
                 control={control}
-                formField={TeacherSignUpField.SCHOOL}
-                label={"Mokykla"}
-                errorMessage={errors.school?.message}
+                formField={TeacherSignUpField.REPEAT_PASSWORD}
+                label={"Pakartokite slaptažodį"}
+                type='password'
+                errorMessage={errors.repeatPassword?.message}
               />
             </StyledView>
-          </View>
-          <StyledView className='mb-4'>
-            <BaseTextField
-              control={control}
-              formField={TeacherSignUpField.PASSWORD}
-              label={"Slaptažodis"}
-              type='password'
-              errorMessage={errors.password?.message}
-            />
-          </StyledView>
-          <StyledView className='mb-4'>
-            <BaseTextField
-              control={control}
-              formField={TeacherSignUpField.REPEAT_PASSWORD}
-              label={"Pakartokite slaptažodį"}
-              type='password'
-              errorMessage={errors.repeatPassword?.message}
-            />
-          </StyledView>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit(submitForm)}
-          >
-            <Text style={styles.buttonText}>Registruotis</Text>
-          </TouchableOpacity>
-        </FormProvider>
-      </BasePage>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit(submitForm)}
+            >
+              <Text style={styles.buttonText}>Registruotis</Text>
+            </TouchableOpacity>
+          </FormProvider>
+        </BasePage>
+      </ScrollView>
     </FormPage>
   );
 };
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
   inlineWrapper: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     gap: 20,
   },
   button: {

@@ -31,7 +31,11 @@ export const ChildrenPreview: React.FC<ChildrenPreviewProps> = ({
           <Text style={styles.label}>Vaiko vardas</Text>
           <Text style={styles.description}>{children.name}</Text>
         </View>
-        <View>
+        <View style={styles.textContainer}>
+          <Text style={styles.label}>Priskyrimo kodas</Text>
+          <Text style={styles.description}>{children.invitationCode}</Text>
+        </View>
+        <View style={styles.textContainer}>
           <Text style={styles.label}>Klasė</Text>
           <Text style={styles.description}>{children.class}</Text>
         </View>

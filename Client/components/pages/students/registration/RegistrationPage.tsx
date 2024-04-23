@@ -23,6 +23,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../utils/navigations";
 import { useAppContext } from "../../../../contexts/appContext";
+import { BasePage } from "../../../base-page/BasePage";
+import { FormPage } from "../../../base-page/FormPage";
 const StyledView = styled(View);
 
 export const RegistrationPage: React.FC = () => {
@@ -72,10 +74,10 @@ export const RegistrationPage: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FormProvider {...methods}>
-        <View style={styles.middleContainer}>
-          <StyledView className='mb-4'>
+    <FormPage title='Registracija'>
+      <BasePage>
+        <FormProvider {...methods}>
+          <StyledView className='mb-4 w-full'>
             <BaseTextField
               control={control}
               formField={StudentRegistrationField.USERNAME}
@@ -116,9 +118,9 @@ export const RegistrationPage: React.FC = () => {
             <Text style={styles.buttonText}>Baigti registraciją</Text>
           </TouchableOpacity>
           <Image style={styles.image} source={require("./doctors.svg")} />
-        </View>
-      </FormProvider>
-    </SafeAreaView>
+        </FormProvider>
+      </BasePage>
+    </FormPage>
   );
 };
 
@@ -126,12 +128,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: PRIMARY_COLOR,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
-  middleContainer: {
-    width: 500,
     alignItems: "center",
     justifyContent: "center",
     display: "flex",

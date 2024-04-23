@@ -1,6 +1,18 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Modal } from "react-native";
-import { ACCENT_COLOR, PRIMARY_COLOR } from "../../../utils/constants";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Modal,
+  Image,
+} from "react-native";
+import {
+  ACCENT_COLOR,
+  GREY_COLOR,
+  LIGHER_GREY_COLOR,
+  PRIMARY_COLOR,
+} from "../../../utils/constants";
 import { FormPage } from "../../base-page/FormPage";
 import { useAddChild } from "./childQueries";
 import { FormProvider, useForm } from "react-hook-form";
@@ -94,6 +106,7 @@ export const AddChildPage: React.FC = () => {
           >
             <View
               style={{
+                width: "70%",
                 backgroundColor: "white",
                 padding: 20,
                 borderRadius: 10,
@@ -113,6 +126,20 @@ export const AddChildPage: React.FC = () => {
                   Laikinasis slaptažodis:
                 </StyledText>
                 <Text>{childCreateInfo?.tempPassword}</Text>
+              </StyledView>
+              <StyledView className='flex flex-row gap-1 items-center mb-5'>
+                <Image
+                  style={styles.image}
+                  source={require("../../../assets/info.png")}
+                />
+                <StyledView className='flex flex-col gap-2'>
+                  <Text style={styles.infoText}>
+                    Priskyrimo kodas bus matomas vaiko skiltyje.
+                  </Text>
+                  <Text style={styles.infoText}>
+                    Laikinasis slaptažodis rodomas tik vieną kartą.
+                  </Text>
+                </StyledView>
               </StyledView>
 
               <Button color={PRIMARY_COLOR} onClick={handleModalClose}>
@@ -192,5 +219,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  infoText: {
+    color: LIGHER_GREY_COLOR,
+  },
+  image: {
+    width: 20,
+    height: 20,
   },
 });

@@ -14,14 +14,15 @@ export const TaskList: React.FC<TaskListProps> = ({
   tasks,
   isStudent = false,
 }) => {
+  console.log(tasks);
   return (
-    <SafeAreaView>
+    <View>
       <StyledView className='flex flex-col gap-4'>
         {tasks?.map((task, id) => (
           <Task isStudent key={id} task={task} />
         ))}
       </StyledView>
-    </SafeAreaView>
+    </View>
   );
 };
 

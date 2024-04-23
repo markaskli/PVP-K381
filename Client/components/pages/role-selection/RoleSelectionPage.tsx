@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  ScrollView,
+} from "react-native";
 import {
   AuthenticationActionTypes,
   useAppContext,
@@ -21,32 +28,43 @@ export const RoleSelectionPage: React.FC<{ navigation: any }> = ({
 
   return (
     <BasePage>
-      <View style={styles.middleContainer}>
-        <Text style={styles.title}>Rolė</Text>
-      </View>
-      <View style={styles.bubbleContainer}>
-        <TouchableOpacity
-          style={styles.bubbleElement}
-          onPress={() => handleButtonPress("teacher")}
-        >
-          <View style={styles.bubble}></View>
-          <Text style={styles.buttonText}>Mokytojas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.bubbleElement}
-          onPress={() => handleButtonPress("parent")}
-        >
-          <View style={styles.bubble}></View>
-          <Text style={styles.buttonText}>Tėvai</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.bubbleElement}
-          onPress={() => handleButtonPress("student")}
-        >
-          <View style={styles.bubble}></View>
-          <Text style={styles.buttonText}>Vaikas</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView>
+        <View style={styles.middleContainer}>
+          <Text style={styles.title}>Rolė</Text>
+        </View>
+        <View style={styles.bubbleContainer}>
+          <TouchableOpacity
+            style={styles.bubbleElement}
+            onPress={() => handleButtonPress("teacher")}
+          >
+            <Image
+              style={styles.bubble}
+              source={require("../../../assets/teacher.png")}
+            />
+            <Text style={styles.buttonText}>Mokytojas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bubbleElement}
+            onPress={() => handleButtonPress("parent")}
+          >
+            <Image
+              style={styles.bubble}
+              source={require("../../../assets/parent.png")}
+            />
+            <Text style={styles.buttonText}>Tėvai</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bubbleElement}
+            onPress={() => handleButtonPress("student")}
+          >
+            <Image
+              style={styles.bubble}
+              source={require("../../../assets/child.png")}
+            />
+            <Text style={styles.buttonText}>Vaikas</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </BasePage>
   );
 };
@@ -71,7 +89,7 @@ const styles = StyleSheet.create({
   bubble: {
     width: 100,
     height: 100,
-    backgroundColor: "#000",
+    objectFit: "contain",
     borderRadius: 50,
   },
   title: {

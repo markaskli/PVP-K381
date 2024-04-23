@@ -6,8 +6,8 @@ export enum TeacherSignInField {
 }
 
 export const signInFormSchema = z.object({
-  email: z.string(),
-  password: z.string(),
+  email: z.string().min(1, "Šis laukelis yra privalomas"),
+  password: z.string().min(1, "Šis laukelis yra privalomas"),
 });
 
 export const defaultTeacherSignInFormValues = {
