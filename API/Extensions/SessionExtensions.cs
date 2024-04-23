@@ -14,6 +14,17 @@ namespace API.Extensions
                 return null;
             }
 
+            int roleId = 0;
+            if (user.UserMetadata.TryGetValue("role_id", out var roleIdObj))
+            {
+                roleId = (int)(long)roleIdObj;
+            }
+
+            if (roleId == 0)
+            {
+                return null;
+            }
+
             var name = "";
             if (user.UserMetadata.TryGetValue("name", out var nameObj))
             {
@@ -33,19 +44,16 @@ namespace API.Extensions
                 profilePictureUrl = profilePictureObj.ToString();
             }
 
-            int roleId = 0;
-            if (user.UserMetadata.TryGetValue("role_id", out var roleIdObj))
-            {
-                roleId = (int)(long)roleIdObj;
-            }
 
-            if (roleId == 0)
+
+            int totalPoints = 0;
+            if (user.UserMetadata.TryGetValue("points", out var totalPointsObj))
             {
-                return null;
+                totalPoints = (int)(long)totalPointsObj;
             }
 
 
-            
+
             return new GetUserInformationDTO()
             {
                 Id = user.Id ?? "",
@@ -54,6 +62,7 @@ namespace API.Extensions
                 Surname = surname,
                 ProfilePictureUrl = profilePictureUrl,
                 RoleId = roleId,
+                Points = totalPoints,
                 Email = user.Email ?? "",
             };
         }

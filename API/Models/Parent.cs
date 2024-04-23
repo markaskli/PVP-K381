@@ -20,6 +20,8 @@ namespace API.Models
         public DateTime BirthDate { get; set; }
         [Column("profile_picture_url")]
         public string ProfilePictureUrl { get; set; } = null!;
+        [Column("points")]
+        public int Points { get; set; }
         [Column("role_id")]
         public int RoleId { get; set; } = 1;
 
