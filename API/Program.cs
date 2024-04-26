@@ -2,6 +2,7 @@ using API.Models;
 using API.Models.DTOs.Parent;
 using API.Services.ChildService;
 using API.Services.ParentService;
+using API.Services.PaymentService;
 using API.Services.RoomService;
 using API.Services.TaskService;
 using API.Services.TeacherService;
@@ -33,12 +34,14 @@ builder.Services.AddSingleton<Supabase.Client>(_ =>
        )
 );
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IParentService, ParentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<IChildService, ChildService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
 var secretKey = builder.Configuration["Jwt:Key"];
