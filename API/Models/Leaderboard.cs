@@ -1,4 +1,4 @@
-using Postgrest.Attributes;
+﻿using Postgrest.Attributes;
 using Postgrest.Models;
 
 namespace API.Models
@@ -9,9 +9,9 @@ namespace API.Models
         [PrimaryKey("id")]
         public int Id { get; set; }
         [Column("score")]
-        public int Score { get; set; };
+        public int Score { get; set; }
         [Column("rank")]
-        public int Rank { get; set; };
+        public int Rank { get; set; }
         [Column("player_id")]
         public string PlayerId { get; set; } = null!;
     }
