@@ -16,7 +16,6 @@ type RoomFilterProps = {
 
 export const RoomFilter: React.FC<RoomFilterProps> = ({ rooms }) => {
   const { setSelectedGroup, selectedGroup } = useAppContext();
-  // const { data: rooms } = useGetRooms();
   if (!rooms) return;
   return (
     <ScrollView>
