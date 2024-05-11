@@ -11,7 +11,10 @@ import { useAppContext } from "../../../contexts/appContext";
 
 const StyledButton = styled(TouchableOpacity);
 
-const links = [{ name: "Grupės", path: "Groups" }];
+const links = [
+  { name: "Grupės", path: "Groups" },
+  { name: "Lyderių lentelė", path: "Leaderboard" },
+];
 
 export const DashboardNavbar = () => {
   const signOut = useSignOut();

@@ -13,4 +13,5 @@ export type RootStackParamList = {
   ChildrenInGroupPreview: undefined | { childId: string; userId: string };
   GroupPreview: undefined | { groupId: string };
   ParentTaskPreview: { taskId: string };
+  Payments: undefined;
 };
