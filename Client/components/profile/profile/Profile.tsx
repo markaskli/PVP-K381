@@ -72,6 +72,10 @@ export const ProfilePage = () => {
     navigation.navigate("AuthenticationPage");
   };
 
+  const navigateToPaymentScreen = () => {
+    navigation.navigate("Payments");
+  };
+
   const navigateToChangePassword = () => {
     navigation.navigate("ChangePassword");
   };
@@ -163,6 +167,9 @@ export const ProfilePage = () => {
           </Button>
           <Button onClick={logoutUser} color={"#ff5252"}>
             <Text>Atsijungti</Text>
+          </Button>
+          <Button onClick={navigateToPaymentScreen} color={"#ff5252"}>
+            <Text>Pildyti taškus</Text>
           </Button>
         </StyledView>
       </StyledView>
