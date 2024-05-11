@@ -10,6 +10,7 @@ import { useCompleteTaskParent } from "../../api/supabase/queries/tasks";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/navigations";
 import { useQueryClient } from "@tanstack/react-query";
+import { startOfDay } from "date-fns";
 const StyledView = styled(View);
 const StyledText = styled(Text);
 type TaskPreviewProps = {
@@ -40,6 +41,9 @@ export const ParentTaskPreview: React.FC<TaskPreviewProps> = ({
       }
     );
   };
+
+  const isPastCompletionDate =
+    startOfDay(new Date()) > startOfDay(new Date(task.dueDate));
 
   return (
     <View style={styles.container}>
@@ -97,17 +101,18 @@ export const ParentTaskPreview: React.FC<TaskPreviewProps> = ({
                   <StyledText>
                     {completion.isConfirmedByParent ? "Atlikta" : "Neatlikta"}
                   </StyledText>
-                  {completion.isConfirmedByChild ||
-                    (!completion.isConfirmedByParent && (
-                      <Button
-                        onClick={() => handleTaskCompletion(completion.id)}
-                        color='#000'
-                      >
-                        <StyledText style={{ color: "#fff" }}>
-                          Patvirtinti
-                        </StyledText>
-                      </Button>
-                    ))}
+                  {!isPastCompletionDate &&
+                    (completion.isConfirmedByChild ||
+                      (!completion.isConfirmedByParent && (
+                        <Button
+                          onClick={() => handleTaskCompletion(completion.id)}
+                          color='#000'
+                        >
+                          <StyledText style={{ color: "#fff" }}>
+                            Patvirtinti
+                          </StyledText>
+                        </Button>
+                      )))}
                 </StyledView>
               </StyledView>
             ))}

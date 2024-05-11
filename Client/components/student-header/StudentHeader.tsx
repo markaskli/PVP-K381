@@ -1,7 +1,6 @@
 import React from "react";
-import { styled } from "nativewind";
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
-import { ACCENT_COLOR, PRIMARY_COLOR } from "../../utils/constants";
+import { PRIMARY_COLOR } from "../../utils/constants";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/navigations";
@@ -13,6 +12,13 @@ export const StudentHeader: React.FC<StudentHeaderProps> = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.navigate("Character")}>
+        <Image
+          style={styles.image}
+          alt='animal'
+          source={require("../../assets/animal.png")}
+        />
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
         <Image
           style={styles.image}
@@ -31,13 +37,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     backgroundColor: PRIMARY_COLOR,
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingLeft: 20,
     paddingRight: 20,
   },
   image: {
     width: 30,
+    height: 30,
     objectFit: "contain",
   },
 });
