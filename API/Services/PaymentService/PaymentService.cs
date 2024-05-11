@@ -105,16 +105,5 @@ namespace API.Services.PaymentService
             return false;
 
         }
-
-        public async Task<bool> test()
-        {
-            var paymentSucceededProps = new Dictionary<string, object>()
-                {
-                    {"gainedpoints", 200 },
-                    {"userid", "c232e2c1-4e03-44ce-bca9-1bee2abac0e9" }
-                };
-            var result = await _supabaseClient.Rpc("payment_succeeded", paymentSucceededProps);
-            return false;
-        }
     }
 }
