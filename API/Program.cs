@@ -1,6 +1,7 @@
 using API.Models;
 using API.Models.DTOs.Parent;
 using API.Services.ChildService;
+using API.Services.InventoryService;
 using API.Services.LeaderboardService;
 using API.Services.ParentService;
 using API.Services.PaymentService;
@@ -46,8 +47,7 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-
-
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 var secretKey = builder.Configuration["Jwt:Key"];
 var issuer = builder.Configuration["Jwt:Issuer"];
