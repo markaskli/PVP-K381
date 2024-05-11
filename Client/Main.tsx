@@ -53,6 +53,7 @@ export const Main = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
     backgroundColor: PRIMARY_COLOR,
   },
 });
