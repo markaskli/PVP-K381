@@ -1,12 +1,11 @@
 ﻿using API.Models;
 using API.Models.DTOs.Inventory;
-using Supabase;
 
 namespace API.Services.InventoryService
 {
     public class InventoryService : IInventoryService
     {
-        private readonly Client _supabaseClient;
+        private readonly Supabase.Client _supabaseClient;
 
         public InventoryService(Supabase.Client supabaseClient)
         {
@@ -25,8 +24,11 @@ namespace API.Services.InventoryService
                 {
                     ChildId = userId,
                 };
+
                 var response = await _supabaseClient.From<Inventory>()
                     .Insert(userInventory);
+
+                userInventory = response.Model;
             }
 
             var inventoryProduct = userInventory.Items.Find(x => x.ProductId == productId);
@@ -46,16 +48,18 @@ namespace API.Services.InventoryService
                     return null;
                 }
 
-                userInventory.Items.Add(new InventoryItem()
+                inventoryProduct = new InventoryItem()
                 {
                     InventoryId = userInventory.Id,
                     ProductId = product.Id,
                     Quantity = quantity
-                });
+                };
+
+                userInventory.Items.Add(inventoryProduct);
             }
 
             var result = await _supabaseClient.From<InventoryItem>()
-                .Insert(userInventory.Items);
+                .Upsert(inventoryProduct);
 
 
             return new GetIventoryDTO()
@@ -66,7 +70,8 @@ namespace API.Services.InventoryService
                     Id = it.ProductId,
                     Name = it.Product.Name,
                     Description = it.Product.Description,
-                    HealthChange = it.Product.HealthChange
+                    HealthChange = it.Product.HealthChange,
+                    Quantity = it.Quantity
                 }).ToList()
             };
 
@@ -83,19 +88,26 @@ namespace API.Services.InventoryService
                 return null;
             }
 
-            var product = userInventory.Items.Find(x => x.ProductId == productId);
-            if (product == null)
+            var inventoryItem = userInventory.Items.Find(x => x.ProductId == productId);
+            if (inventoryItem == null)
             {
                 return null;
             }
 
-            product.Quantity -= quatity;
-            if (product.Quantity <= 0)
+            inventoryItem.Quantity -= quatity;
+            if (inventoryItem.Quantity <= 0)
             {
-                userInventory.Items.Remove(product);
+                userInventory.Items.Remove(inventoryItem);
+                await _supabaseClient.From<InventoryItem>()
+                    .Where(x => x.Id == inventoryItem.Id)
+                    .Delete();
             }
 
-            var result = await userInventory.Update<Inventory>();
+            var result = await _supabaseClient.From<InventoryItem>()
+                .Where(x => x.Id == inventoryItem.Id)
+                .Set(x => x.Quantity, inventoryItem.Quantity)
+                .Update();
+
             return new GetIventoryDTO()
             {
                 Id = userInventory.Id,
@@ -104,7 +116,8 @@ namespace API.Services.InventoryService
                     Id = it.ProductId,
                     Name = it.Product.Name,
                     Description = it.Product.Description,
-                    HealthChange = it.Product.HealthChange
+                    HealthChange = it.Product.HealthChange,
+                    Quantity = inventoryItem.Quantity
                 }).ToList()
             };
 
@@ -129,7 +142,8 @@ namespace API.Services.InventoryService
                     Id = it.ProductId,
                     Name = it.Product.Name,
                     Description = it.Product.Description,
-                    HealthChange = it.Product.HealthChange
+                    HealthChange = it.Product.HealthChange,
+                    Quantity = it.Quantity
                 }).ToList()
             };
 

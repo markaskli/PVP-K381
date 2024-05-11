@@ -52,12 +52,5 @@ namespace API.Controllers
             }
 
         }
-
-        [HttpPost("test")]
-        public async Task<ActionResult> test()
-        {
-            await _paymentService.test();
-            return Ok();
-        }
     }
 }

@@ -8,11 +8,11 @@ namespace API.Models
     {
         [PrimaryKey("id")]
         public int Id { get; set; }
-        [PrimaryKey("inventory_id")]
+        [PrimaryKey("inventory_id", shouldInsert: true)]
         public int InventoryId { get; set; }
-        [PrimaryKey("product_id")]
+        [PrimaryKey("product_id", shouldInsert: true)]
         public int ProductId { get; set; }
-        [Column("quantity")]
+        [Column("quantity", NullValueHandling = 0)]
         public int Quantity { get; set; }
         [Reference(typeof(Product), useInnerJoin: true)]
         public Product Product { get; set; }
