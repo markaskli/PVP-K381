@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "IOS-test",
-    "slug": "IOS-test",
+    "name": "k381-push",
+    "slug": "k381-push",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -30,14 +30,21 @@
       "bundler": "metro"
     },
     "plugins": [
-      ["expo-build-properties", {
-        "android": {
-          "usesCleartextTraffic": true
-        },
-        "ios": {
-
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          },
+          "ios": {}
         }
-      }]
-    ]
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "10e91cb0-fec3-49bb-a3c3-50de2c06903b"
+      }
+    },
+    "owner": "arnelioo"
   }
 }
