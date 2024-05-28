@@ -2,7 +2,7 @@ import { QueryKey } from "../../react-query/queryKeys";
 import axiosInstance from "../axios";
 import { ChildInGroupRemoveRequest } from "./types";
 
-const BASE_URL = `http://localhost:5228/api/Room`;
+const BASE_URL = `http://10.0.2.2:5228/api/Room`;
 
 export type DeleteRoomByIDQueryKey = [
   QueryKey.DELETE_ROOM,

@@ -1,7 +1,7 @@
 import axiosInstance from "../axios";
 import { ChildInsertionInformation, RegisterParentData } from "./types";
 
-const BASE_URL = `http://localhost:5228/api/Parent`;
+const BASE_URL = `http://10.0.2.2:5228/api/Parent`;
 
 export const parentsApi = {
   registerParent: async ({

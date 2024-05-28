@@ -1,11 +1,11 @@
-import axiosInstance from "../axios";
+import axiosInstance from '../axios';
 import {
   ChangePasswordRequest,
   ChildLoginRequest,
   LoginParentOrTeacherData,
-} from "./types";
+} from './types';
 
-const BASE_URL = `http://localhost:5228/api/User`;
+const BASE_URL = `http://10.0.2.2:5228/api/User`;
 
 export const authenticationApi = {
   loginParentOrTeacher: async ({

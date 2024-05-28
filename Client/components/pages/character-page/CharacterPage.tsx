@@ -1,89 +1,89 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, { useState } from 'react';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { BasePage } from '../../base-page/BasePage';
+import { Character } from '../../character/Character';
+import { Healthbar } from '../../character/healthbar/Healthbar';
+import { Inventory } from '../../inventory/InventoryBlock'; // Naudojame numatytąjį importą
 import {
   ACCENT_COLOR,
   GREY_COLOR,
   LIGHER_GREY_COLOR,
-} from "../../../utils/constants";
-import { BasePage } from "../../base-page/BasePage";
-import { Character } from "../../character/Character";
-import { Healthbar } from "../../character/healthbar/Healthbar";
+} from '../../../utils/constants';
 
 export const CharacterPage: React.FC = () => {
+  const [inventoryVisible, setInventoryVisible] = useState(false);
+
+  const toggleInventory = () => {
+    setInventoryVisible(!inventoryVisible);
+  };
+
   return (
     <View style={styles.container}>
       <BasePage>
+        <TouchableOpacity onPress={toggleInventory}>
+          <Image
+            style={styles.inventoryButton}
+            alt="inventory"
+            source={require('../../../assets/ready-stock.png')}
+          />
+        </TouchableOpacity>
         <View></View>
-        <View style={{ display: "flex", justifyContent: "space-between" }}>
+        <View style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Character />
           <View style={{ marginTop: 20 }}>
             <Healthbar />
           </View>
-          <View></View>
         </View>
+
+        {inventoryVisible && (
+          <View style={styles.inventoryContainer}>
+            <Inventory onClose={toggleInventory} />
+          </View>
+        )}
       </BasePage>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  inventoryButton: {
+    width: 50,
+    height: 50,
+    top: 10,
+    right: 170,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    display: "flex",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
   },
-  energyBar: {
-    borderRadius: 20,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    padding: 8,
-    borderColor: ACCENT_COLOR,
-    borderWidth: 1,
+  characterContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
-  inlineWrapper: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 20,
+  healthbarContainer: {
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
   },
-  button: {
-    backgroundColor: ACCENT_COLOR,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  middleContainer: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
-  inputsContainer: {
-    marginBottom: 15,
-  },
-  title: {
-    fontSize: 72,
-    fontWeight: "700",
-    color: "#232222",
-    textAlign: "left",
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  infoText: {
-    color: LIGHER_GREY_COLOR,
-  },
-  image: {
-    width: 20,
-    height: 20,
+  inventoryContainer: {
+    position: 'absolute',
+
+    //width: '100%',
+    //height: '50%',
+    //backgroundColor: ACCENT_COLOR,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    //alignItems: 'center',
+    justifyContent: 'center',
+    width: 400,
+    height: 250,
+    top: 500,
+    left: -175,
   },
 });

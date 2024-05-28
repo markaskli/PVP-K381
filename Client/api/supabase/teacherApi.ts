@@ -1,7 +1,7 @@
-import axiosInstance from "../axios";
-import { RegisterTeacherData } from "./types";
+import axiosInstance from '../axios';
+import { RegisterTeacherData } from './types';
 
-const BASE_URL = `http://localhost:5228/api/Teacher`;
+const BASE_URL = `http://10.0.2.2:5228/api/Teacher`;
 
 export const teacherApi = {
   registerTeacher: async ({

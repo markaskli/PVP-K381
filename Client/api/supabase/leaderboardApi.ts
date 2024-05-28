@@ -1,6 +1,6 @@
 import axiosInstance from "../axios";
 
-const BASE_URL = `http://localhost:5228/api/Leaderboard`;
+const BASE_URL = `http://10.0.2.2:5228/api/Leaderboard`;
 
 export const leaderboardApi = {
   getGlobalLeaderboard: async () => {

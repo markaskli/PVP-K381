@@ -2,7 +2,7 @@ import { QueryKey } from "../../react-query/queryKeys";
 import axiosInstance from "../axios";
 import { RegisterChildRequest } from "./types";
 
-const BASE_URL = `http://localhost:5228/api/Child`;
+const BASE_URL = `http://10.0.2.2:5228/api/Child`;
 
 export type GetChildByParentIdQueryKey = [
   QueryKey.GET_CHILDS_BY_PARENT,

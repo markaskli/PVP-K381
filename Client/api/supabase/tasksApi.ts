@@ -1,8 +1,8 @@
-import { QueryKey } from "../../react-query/queryKeys";
-import axiosInstance from "../axios";
-import { CreateTaskData } from "./types";
+import { QueryKey } from '../../react-query/queryKeys';
+import axiosInstance from '../axios';
+import { CreateTaskData } from './types';
 
-const BASE_URL = `http://localhost:5228/api/Task`;
+const BASE_URL = `http://10.0.2.2:5228/api/Task`;
 
 export type FindReservationByIdQueryKey = [
   QueryKey.GET_TASKS_BY_USER,
