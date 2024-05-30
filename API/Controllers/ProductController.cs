@@ -16,6 +16,16 @@ namespace API.Controllers
             _productService = productService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<GetProductDTO>>> GetProducts()
+        {
+            var products = await _productService.GetProducts();
+            if (products == null)
+            {
+                return NotFound();
+            }
+            return products;
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<GetProductDTO>> GetById(int id)
@@ -35,6 +45,7 @@ namespace API.Controllers
                 return StatusCode(500, new ProblemDetails() { Detail = ex.Message });
             }
         }
+
 
         [HttpPost]
         public async Task<ActionResult<GetProductDTO>> Create([FromForm]CreateProductDTO request)
