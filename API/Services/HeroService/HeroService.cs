@@ -218,6 +218,8 @@ namespace API.Services.HeroService
                 return null;
             }
 
+            await acquiredHero.Update<AcquiredHero>();
+
             return new GetAcquiredHeroDTO()
             {
                 AcquiredHeroId = acquiredHero.Id,
