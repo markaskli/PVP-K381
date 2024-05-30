@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { useRegisterChild } from "./childQueries";
 import { FormProvider, useForm } from "react-hook-form";
@@ -46,6 +47,25 @@ export const RegistrationPage: React.FC = () => {
     formState: { errors },
   } = methods;
 
+  const showAlert = ({ title, message }: { title: string; message: string }) =>
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: "Uždaryti",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog."
+          ),
+      }
+    );
+
   const submitForm = () => {
     const values = getValues();
     const childInformation = studentRegistrationFormSchema.parse(values);
@@ -65,6 +85,10 @@ export const RegistrationPage: React.FC = () => {
           changeIsLoggedIn(true);
           setUser({ id });
           navigation.navigate("Dashboard");
+          showAlert({
+            title: "Registracija sėkminga",
+            message: "Registracija sėkminga. Galite naudotis programa.",
+          });
         },
         onError: (err) => {
           console.log(err.message);

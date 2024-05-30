@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Alert } from "react-native";
 import {
   JoinGroupField,
   defaultGroupJoinFormValues,
@@ -25,6 +25,20 @@ export const GroupJoin = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { refetch } = useGetChildRooms();
+  const showAlert = ({ title, message }: { title: string; message: string }) =>
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: "Uždaryti",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
 
   const methods = useForm({
     resolver: zodResolver(groupJoinFormSchema),
@@ -55,7 +69,6 @@ export const GroupJoin = () => {
   const submitForm = () => {
     const values = getValues();
     const { invitationCode } = groupJoinFormSchema.parse(values);
-
     joinGroup.mutate(
       {
         code: invitationCode,
@@ -64,10 +77,18 @@ export const GroupJoin = () => {
         onSuccess: async (res) => {
           refetch();
           navigation.navigate("Dashboard");
+          showAlert({
+            title: "Sėkmingas prisijungimas į grupę",
+            message: "Sėkmingai prisijungėte į grupę.",
+          });
         },
         onError: async (res) => {
           if (res.message.includes("401")) {
             handleSignOut();
+            showAlert({
+              title: "Įvyko klaida",
+              message: "Įvyko klaida. Bandykite dar kartą",
+            });
           }
         },
       }
@@ -85,10 +106,7 @@ export const GroupJoin = () => {
               />
             </StyledView>
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit(submitForm)}
-          >
+          <TouchableOpacity style={styles.button} onPress={submitForm}>
             <Text style={styles.buttonText}>Prisijungti</Text>
           </TouchableOpacity>
         </FormProvider>
