@@ -75,7 +75,6 @@ namespace API.Services.RoomService
                 throw new ArgumentException("Invalid data provided.");
             }
 
-
             var room = await _supabaseClient.From<Room>()
                 .Where(x => x.InvitationCode == invitationCode)
                 .Single();
@@ -123,8 +122,13 @@ namespace API.Services.RoomService
                         newTasksForUser.Add(task);                 
                     }
                 }
-                await _supabaseClient.From<AssignedTask>()
-                    .Insert(newTasksForUser);
+
+                if (newTasksForUser.Count > 0)
+                {
+                    await _supabaseClient.From<AssignedTask>()
+                        .Insert(newTasksForUser);
+                }
+
                 return true;
             }
 
@@ -157,6 +161,7 @@ namespace API.Services.RoomService
             var rooms = await _supabaseClient.From<Room>()
                 .Where(x => x.CreatedById == creatorId)
                 .Get();
+
 
             if (rooms != null && rooms.ResponseMessage.IsSuccessStatusCode)
             {

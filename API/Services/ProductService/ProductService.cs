@@ -64,6 +64,36 @@ namespace API.Services.ProductService
             };
         }
 
+        public async Task<List<GetProductDTO>?> GetProducts()
+        {
+            var products = await _supabaseClient.From<Product>()
+                .Get();
+
+            if (products.Models.Count == 0)
+            {
+                return null;
+            }
+
+            var productsList = new List<GetProductDTO>();
+
+            foreach(Product product in products.Models)
+            {
+                var image = _supabaseClient.Storage.From("product-images").GetPublicUrl($"product-{product.Id}.png");
+                productsList.Add(new GetProductDTO()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    HealthChange = product.HealthChange,
+                    PictureUrl = image
+
+                });
+            }
+
+            return productsList;
+
+        }
+
         public async Task<bool> DeleteProductById(int productId)
         {
             await _supabaseClient.From<Product>()
@@ -76,5 +106,7 @@ namespace API.Services.ProductService
 
             return true;
         }
+
+
     }
 }

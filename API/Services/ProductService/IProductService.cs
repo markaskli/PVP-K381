@@ -7,5 +7,6 @@ namespace API.Services.ProductService
         Task<GetProductDTO> AddProduct(CreateProductDTO request);
         Task<bool> DeleteProductById(int productId);
         Task<GetProductDTO?> GetProductById(int productId);
+        Task<List<GetProductDTO>?> GetProducts();
     }
 }
