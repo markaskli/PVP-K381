@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Text,
+} from "react-native";
 import { BasePage } from "../../../base-page/BasePage";
 import { useGetChildRooms } from "../../groups/groupsQueries";
 import { GroupsList } from "../../../groups-list/GroupsList";
@@ -16,6 +23,8 @@ import { RoomFilter } from "../../../room-filter/RoomFilter";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../utils/navigations";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { red700 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
+import { COLOR_RED } from "../../../../utils/constants";
 
 const StyledView = styled(View);
 
@@ -60,7 +69,32 @@ export const Dashboard = () => {
         </TouchableOpacity>
         <BasePage>
           <RoomFilter rooms={rooms} />
-          <TaskList isStudent tasks={filteredTasks} />
+          {filteredTasks.length ? (
+            <TaskList isStudent tasks={filteredTasks} />
+          ) : (
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginTop: 50,
+                flex: 1,
+                opacity: 0.7,
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <Image
+                style={styles.image}
+                source={require("../../../../assets/RabbitPortrait.png")}
+              />
+              <Text
+                style={{ color: COLOR_RED, fontWeight: "600", fontSize: 14 }}
+              >
+                Nėra duomenų
+              </Text>
+            </View>
+          )}
         </BasePage>
       </ScrollView>
     </StyledView>
@@ -77,5 +111,10 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingRight: 20,
     height: 70,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    opacity: 0.7,
   },
 });

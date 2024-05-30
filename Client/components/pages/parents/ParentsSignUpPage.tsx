@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Alert,
 } from "react-native";
 import { PRIMARY_COLOR } from "../../../utils/constants";
 import { FormPage } from "../../base-page/FormPage";
@@ -40,6 +41,21 @@ export const ParentsSignUpPage: React.FC = ({}) => {
     mode: "all",
   });
 
+  const showAlert = ({ title, message }: { title: string; message: string }) =>
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: "Uždaryti",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+
   const {
     handleSubmit,
     control,
@@ -66,6 +82,16 @@ export const ParentsSignUpPage: React.FC = ({}) => {
           setUser(res);
           changeIsLoggedIn(true);
           navigation.navigate("Dashboard");
+          showAlert({
+            title: "Regsitracija sėkminga",
+            message: "Registracijos etapas baigtas.",
+          });
+        },
+        onError: () => {
+          showAlert({
+            title: "Įvyko klaida",
+            message: "Įvyko klaida, bandykite dar kartą.",
+          });
         },
       }
     );
