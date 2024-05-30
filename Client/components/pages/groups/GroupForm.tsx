@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ACCENT_COLOR } from "../../../utils/constants";
 import { FormPage } from "../../base-page/FormPage";
 import { FormProvider, useForm } from "react-hook-form";
@@ -50,6 +50,21 @@ export const GroupForm: React.FC<GroupFormProps> = ({ refetch, groupId }) => {
     }
   }, [group]);
 
+  const showAlert = ({ title, message }: { title: string; message: string }) =>
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: "Uždaryti",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+
   const submitForm = () => {
     const values = getValues();
     const form = groupFormSchema.parse(values);
@@ -57,6 +72,17 @@ export const GroupForm: React.FC<GroupFormProps> = ({ refetch, groupId }) => {
     createRoom.mutate(form, {
       onSuccess: async (res) => {
         navigation.goBack();
+        showAlert({
+          title: "Grupė sukurta sėkmingai",
+          message:
+            "Sukūrėte grupę. Sekantis žingsnis - išdalinti užklausos kodą vaikams.",
+        });
+      },
+      onError: (res) => {
+        showAlert({
+          title: "Įvyko klaida",
+          message: "Įvyko klaida. Bandykite dar kartą",
+        });
       },
     });
   };

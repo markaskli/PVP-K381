@@ -13,6 +13,7 @@ import { AppStack } from "./stacks/AppStack";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "./utils/navigations";
+import Push from './components/Push'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ export const Main = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
     backgroundColor: PRIMARY_COLOR,
   },
 });

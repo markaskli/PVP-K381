@@ -10,9 +10,12 @@ import { useGetRooms } from "../pages/groups/groupsQueries";
 import { ACCENT_COLOR, GREY_COLOR } from "../../utils/constants";
 import { useAppContext } from "../../contexts/appContext";
 
-export const RoomFilter = () => {
+type RoomFilterProps = {
+  rooms: any;
+};
+
+export const RoomFilter: React.FC<RoomFilterProps> = ({ rooms }) => {
   const { setSelectedGroup, selectedGroup } = useAppContext();
-  const { data: rooms } = useGetRooms();
   if (!rooms) return;
   return (
     <ScrollView>

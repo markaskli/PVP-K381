@@ -19,7 +19,7 @@ export const GroupsPage = () => {
   const { data: rooms, refetch: refetchGetRooms, isLoading } = useGetRooms();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  console.log(rooms);
   const refetchRooms = () => {
     refetchGetRooms();
   };

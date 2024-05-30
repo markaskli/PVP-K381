@@ -5,8 +5,13 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { BasePage } from "../../base-page/BasePage";
 import { DashboardNavbar } from "./DashboardNavbar";
 import { RoomFilter } from "../../room-filter/RoomFilter";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../utils/navigations";
 
-export const Dashboard: React.FC<{ navigation: any }> = ({ navigation }) => {
+export const Dashboard: React.FC = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
     const checkAuthentication = async () => {

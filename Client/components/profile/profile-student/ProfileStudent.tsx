@@ -48,7 +48,7 @@ export const ProfileStudent = () => {
       const userData = await AsyncStorage.getItem("user");
       const { username, points } = JSON.parse(userData);
       setValue("name", username);
-      setValue("capturedPoints", points.toString());
+      setValue("capturedPoints", points?.toString() || "0");
     };
     getUserData();
   }, []);
