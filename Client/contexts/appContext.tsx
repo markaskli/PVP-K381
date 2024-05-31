@@ -1,6 +1,7 @@
 // AppContext.js
 import React, { createContext, useState, useContext } from "react";
 import { Child } from "../components/types/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Create a Context
 const AppContext = createContext({});
@@ -8,7 +9,7 @@ const AppContext = createContext({});
 export type UserData = {
   id: string;
   roleId: string;
-  points: string;
+  points: number;
   username: string;
 };
 
@@ -17,9 +18,7 @@ type AppState = {
   childInsertion: Child[];
   isLoggedIn: boolean;
   selectedGroup: string;
-  user: {
-    id: string;
-  };
+  user: UserData;
 };
 
 export type AuthenticationActionTypes = "register" | "login";
@@ -30,7 +29,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [state, setState] = useState<AppState>({
     user: {
-      id: null,
+      id: "",
+      roleId: "",
+      points: 0,
+      username: "",
     },
     authenticationAction: null,
     childInsertion: [],
@@ -43,6 +45,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const selectUser = state.user;
 
   const selectedGroup = state.selectedGroup;
+
+  const modifyPoints = async (count: number) => {
+    setUser({
+      ...selectUser,
+      points: Number(selectUser.points) + count,
+    });
+
+    const userData = await AsyncStorage.getItem("user");
+    const { name, surname, email, points, id } = JSON.parse(userData);
+    await AsyncStorage.setItem(
+      "user",
+      JSON.stringify({
+        name,
+        surname,
+        email,
+        id,
+        points: Number(selectUser.points) + Number(count),
+      })
+    );
+  };
 
   const setAuthenticationAction = (action: AuthenticationActionTypes) => {
     setState((prevState) => ({
@@ -94,6 +116,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedGroup,
         selectedGroup,
         child,
+        modifyPoints,
         setUser,
         selectUser,
         addChild,

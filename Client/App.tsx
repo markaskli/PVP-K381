@@ -8,6 +8,7 @@ NativeWindStyleSheet.setOutput({
 });
 
 export default function App() {
+  
   return (
     <AppProvider>
       <NavigationContainer>

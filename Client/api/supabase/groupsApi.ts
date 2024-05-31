@@ -24,10 +24,15 @@ export const groupApi = {
     return result.data;
   },
   joinRoom: async ({ code }: { code: string }) => {
-    const result = await axiosInstance.post(
-      `${BASE_URL}/join/?invitationCode=${code}`
-    );
-    return result.data;
+    try {
+      const result = await axiosInstance.post(
+        `${BASE_URL}/join?invitationCode=${code}`
+      );
+      console.log(result);
+      return result.data;
+    } catch (error) {
+      console.log(error);
+    }
   },
   removeChildFromGroup: async ({
     information,

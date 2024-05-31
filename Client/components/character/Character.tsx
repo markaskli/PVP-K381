@@ -1,13 +1,26 @@
 import React from "react";
 
 import { StyleSheet, Image } from "react-native";
+import { useGetChildHeroes } from "../../api/supabase/queries/heroesQueries";
 
-export const Character: React.FC = () => {
+type CharacterProps = {
+  character: any;
+};
+
+export const Character: React.FC<CharacterProps> = ({ character }) => {
+  if (!character)
+    return (
+      <Image
+        style={styles.noCharacterImage}
+        source={require("../../assets/RabbitPortrait.png")}
+      />
+    );
+
   return (
     <Image
       style={styles.image}
       alt='reward'
-      source={require("../../assets/OwlGif.gif")}
+      source={{ uri: character.heroPng }}
     />
   );
 };
@@ -20,5 +33,10 @@ const styles = StyleSheet.create({
   image: {
     width: 90,
     height: 90,
+  },
+  noCharacterImage: {
+    width: 90,
+    height: 90,
+    opacity: 0.4,
   },
 });

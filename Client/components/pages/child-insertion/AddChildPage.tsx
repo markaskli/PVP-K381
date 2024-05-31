@@ -88,7 +88,7 @@ export const AddChildPage: React.FC = () => {
   };
 
   return (
-    <FormPage title='Vaiko priskyrimas'>
+    <FormPage parentOrTeacher title='Vaiko priskyrimas'>
       <FormProvider {...methods}>
         <Modal
           visible={showChildCode}

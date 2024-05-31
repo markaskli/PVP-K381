@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { PRIMARY_COLOR } from "../../../utils/constants";
 import { FormPage } from "../../base-page/FormPage";
@@ -48,28 +49,59 @@ export const TeachersSignUpPage: React.FC = ({}) => {
     formState: { errors },
   } = methods;
 
+  const showAlert = ({ title, message }: { title: string; message: string }) =>
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: "Uždaryti",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+
   const submitForm = () => {
     const values = getValues();
     const { repeatPassword, ...form } = signUpFormSchema.parse(values);
-
-    registerTeacher.mutate(
-      {
-        userInformation: form,
-      },
-      {
-        onSuccess: async (res) => {
-          await AsyncStorage.setItem("token", res.token);
-          const { name, surname, email, id, roleId } = res;
-          await AsyncStorage.setItem(
-            "user",
-            JSON.stringify({ name, surname, email, id, roleId })
-          );
-          changeIsLoggedIn(true);
-          setUser(id);
-          navigation.navigate("Dashboard");
+    try {
+      registerTeacher.mutate(
+        {
+          userInformation: form,
         },
-      }
-    );
+        {
+          onSuccess: async (res) => {
+            await AsyncStorage.setItem("token", res.token);
+            const { name, surname, email, id, roleId } = res;
+            await AsyncStorage.setItem(
+              "user",
+              JSON.stringify({ name, surname, email, id, roleId })
+            );
+            changeIsLoggedIn(true);
+            setUser(id);
+            navigation.navigate("Dashboard");
+            showAlert({
+              title: "Regsitracija sėkminga",
+              message: "Registracijos etapas baigtas.",
+            });
+          },
+          onError: () => {
+            showAlert({
+              title: "Įvyko klaida",
+              message: "Įvyko klaida, bandykite dar kartą.",
+            });
+          },
+        }
+      );
+    } catch (error) {
+      showAlert({
+        title: "Įvyko klaida",
+        message: "Įvyko klaida, bandykite dar kartą.",
+      });
+    }
   };
   return (
     <FormPage parentOrTeacher title='Registracija'>
@@ -94,6 +126,14 @@ export const TeachersSignUpPage: React.FC = ({}) => {
                 />
               </StyledView>
             </View>
+            <StyledView className='mb-4 w-1/3'>
+              <BaseTextField
+                control={control}
+                formField={TeacherSignUpField.PROFESSION}
+                label={"Profesija"}
+                errorMessage={errors.profession?.message}
+              />
+            </StyledView>
             <StyledView className='mb-4 w-full'>
               <BaseTextField
                 control={control}

@@ -57,10 +57,11 @@ export const ProfilePage = () => {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem("user");
-      const { name, surname, email, id } = JSON.parse(userData);
+      const { name, surname, email, points } = JSON.parse(userData);
       setValue("name", name);
       setValue("surname", surname);
       setValue("email", email);
+      setValue("capturedPoints", points?.toString() || "0");
     };
     getUserData();
   }, []);
@@ -140,15 +141,14 @@ export const ProfilePage = () => {
                 errorMessage={errors.email?.message}
               />
             </StyledView>
-            {/* <StyledView className='mb-4'>
+            <StyledView className='mb-4'>
               <BaseTextField
                 control={control}
                 formField={ProfileField.CAPTURED_POINTS}
-                label={"Surinkti taškai"}
-                type='number'
+                label={"Taškai"}
                 errorMessage={errors.capturedPoints?.message}
               />
-            </StyledView> */}
+            </StyledView>
           </StyledView>
         </View>
         <View>
@@ -168,9 +168,11 @@ export const ProfilePage = () => {
           <Button onClick={logoutUser} color={"#ff5252"}>
             <Text>Atsijungti</Text>
           </Button>
-          <Button onClick={navigateToPaymentScreen} color={"#ff5252"}>
-            <Text>Pildyti taškus</Text>
-          </Button>
+          {selectUser?.roleId !== 3 && (
+            <Button onClick={navigateToPaymentScreen} color={"#ff5252"}>
+              <Text>Pildyti taškus</Text>
+            </Button>
+          )}
         </StyledView>
       </StyledView>
     </BasePage>

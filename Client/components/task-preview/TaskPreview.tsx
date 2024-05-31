@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import { LIGHER_GREY_COLOR, PRIMARY_COLOR } from "../../utils/constants";
 import { BasePage } from "../base-page/BasePage";
 import { Button } from "../buttons/Button";
@@ -9,6 +16,7 @@ import { PreviewTask } from "../types/types";
 import { useCompleteTaskChild } from "../../api/supabase/queries/tasks";
 import { StatusLabel } from "../status-label/StatusLabel";
 import { format, startOfDay } from "date-fns";
+import { useAppContext } from "../../contexts/appContext";
 
 const StyledView = styled(View);
 
@@ -19,8 +27,24 @@ type TaskPreviewProps = {
 export const TaskPreview: React.FC<TaskPreviewProps> = ({ task: taskData }) => {
   const { task } = taskData;
   const navigation = useNavigation();
+  const { modifyPoints } = useAppContext();
 
   const completeTask = useCompleteTaskChild();
+
+  const showAlert = ({ title, message }: { title: string; message: string }) =>
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: "Uždaryti",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
 
   const isPastCompletionDate =
     startOfDay(new Date()) > startOfDay(new Date(task.dueDate));
@@ -34,9 +58,19 @@ export const TaskPreview: React.FC<TaskPreviewProps> = ({ task: taskData }) => {
       {
         onSuccess: () => {
           console.log("success");
+          showAlert({
+            title: "Užduotis atlikta sėkmingai",
+            message:
+              "Užduotis atlikta sėkmingai. Šią užduotį turi patvirtinti ir grupės atstovas.",
+          });
+          modifyPoints(taskData.task.points);
         },
         onError: (res) => {
           console.log(res);
+          showAlert({
+            title: "Užduotis jau patvirtinta!",
+            message: "Palaukite kol grupės atstovas ją patvirtins.",
+          });
         },
       }
     );
@@ -85,7 +119,7 @@ export const TaskPreview: React.FC<TaskPreviewProps> = ({ task: taskData }) => {
               source={require("../../assets/clock.png")}
             />
             <Text style={styles.description}>
-              {format(new Date(task.dueDate), "yyyy-mm-dd")}
+              {format(new Date(task.dueDate), "yyyy-MM-dd")}
             </Text>
           </StyledView>
         </View>

@@ -21,8 +21,6 @@ export const ParentTaskPreviewPage = () => {
 
   const { data: tasks } = useGetTaskById(taskId);
 
-  console.log(tasks);
-
   const taskData = useMemo(() => {
     if (!tasks) return;
     const initialTask = tasks[0];
