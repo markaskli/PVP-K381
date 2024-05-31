@@ -8,9 +8,11 @@ import {
   LIGHT_GREEN,
 } from "../../../utils/constants";
 
-export const Healthbar = () => {
-  const health = 44;
+type HealthbarProps = {
+  health: number;
+};
 
+export const Healthbar: React.FC<HealthbarProps> = ({ health }) => {
   const healthbarColor = health < 30 ? COLOR_RED : LIGHT_GREEN;
 
   return (

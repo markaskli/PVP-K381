@@ -41,21 +41,23 @@ export const Leaderboard: React.FC = () => {
             </View>
             {globalLeaderboard?.slice(0, 5).map((rank, index) => (
               <View
+                key={index}
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
                   width: "100%",
                   padding: 10,
-                  ...(index % 2 === 0 && { backgroundColor: "lightgrey", borderRadius: 10 }),
+                  ...(index % 2 === 0 && {
+                    backgroundColor: "lightgrey",
+                    borderRadius: 10,
+                  }),
                 }}
               >
                 <Text style={{ fontWeight: "700", width: 40 }}>
                   {rank.rank}
                 </Text>
-                <Text style={{ width: 180 }}>
-                  {rank.childId.slice(0, 20)}
-                </Text>
+                <Text style={{ width: 180 }}>{rank.childId.slice(0, 20)}</Text>
                 <Text style={{ width: 50 }}>{rank.points}</Text>
               </View>
             ))}

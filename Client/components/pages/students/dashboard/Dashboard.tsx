@@ -56,7 +56,9 @@ export const Dashboard = () => {
 
   const filterTasks = (groupId: string) => {
     if (!tasks?.length) return [];
-    return tasks.filter((task) => task.assignedToRoomId === groupId);
+    return tasks.filter((task) => {
+      return task.roomId === groupId;
+    });
   };
 
   if (!userId) return;

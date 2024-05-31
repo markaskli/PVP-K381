@@ -15,9 +15,23 @@ export const useGetChildHeroes = () => {
   });
 };
 
+export const useGetProducts = () => {
+  return useQuery({
+    queryKey: [QueryKey.GET_PRODUCTS],
+    queryFn: heroesApi.getProducts,
+  });
+};
+
 export const useAcquireHeroe = () => {
   return useMutation({
     mutationKey: [QueryKey.GET_HEROES],
     mutationFn: heroesApi.buyHero,
+  });
+};
+
+export const useFeedHero = () => {
+  return useMutation({
+    mutationKey: [QueryKey.FEED_HERO],
+    mutationFn: heroesApi.feedHero,
   });
 };

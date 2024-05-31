@@ -65,7 +65,6 @@ export const TeachersSignUpPage: React.FC = ({}) => {
     );
 
   const submitForm = () => {
-    console.log("alioooo");
     const values = getValues();
     const { repeatPassword, ...form } = signUpFormSchema.parse(values);
     try {

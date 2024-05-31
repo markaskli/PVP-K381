@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.IOStest"
@@ -28,23 +26,6 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
-    },
-    "plugins": [
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": true
-          },
-          "ios": {}
-        }
-      ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "10e91cb0-fec3-49bb-a3c3-50de2c06903b"
-      }
-    },
-    "owner": "arnelioo"
+    }
   }
 }

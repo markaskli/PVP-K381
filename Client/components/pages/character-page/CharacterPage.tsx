@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ScrollView,
 } from "react-native";
 import { ACCENT_COLOR, LIGHER_GREY_COLOR } from "../../../utils/constants";
 import { BasePage } from "../../base-page/BasePage";
@@ -13,15 +14,32 @@ import { Character } from "../../character/Character";
 import { Healthbar } from "../../character/healthbar/Healthbar";
 import {
   useAcquireHeroe,
+  useFeedHero,
   useGetChildHeroes,
   useGetHeroes,
+  useGetProducts,
 } from "../../../api/supabase/queries/heroesQueries";
+import { useAppContext } from "../../../contexts/appContext";
 
 export const CharacterPage: React.FC = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isShopOpened, setIsShopOpened] = useState(false);
   const { data: heroes } = useGetHeroes();
-  const { data: childHeroes } = useGetChildHeroes();
+  const { data: childHeroes, refetch } = useGetChildHeroes();
+  const { data: products } = useGetProducts();
   const buyHero = useAcquireHeroe();
+  const { selectUser, setUser } = useAppContext();
+
+  const feedHero = useFeedHero();
+
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [selectedCharacterIndex, setselectedCharacterIndex] = useState(0);
+
+  useEffect(() => {
+    if (childHeroes) {
+      setSelectedCharacter(childHeroes[0]);
+    }
+  }, [childHeroes]);
 
   const showAlert = ({ title, message }: { title: string; message: string }) =>
     Alert.alert(
@@ -38,21 +56,64 @@ export const CharacterPage: React.FC = () => {
       }
     );
 
-  const handleHeroBuy = (id: number) => {
+  const changeHero = () => {
+    if (!childHeroes?.length) return;
+    if (selectedCharacterIndex + 1 >= childHeroes.length) {
+      setselectedCharacterIndex(0);
+      setSelectedCharacter(childHeroes[0]);
+    } else {
+      const nextIndex = selectedCharacterIndex + 1;
+      setselectedCharacterIndex(nextIndex);
+      setSelectedCharacter(childHeroes[nextIndex]);
+    }
+  };
+
+  const handleHeroBuy = (heroe: any, name: string) => {
+    if (isBought(name)) return;
     buyHero.mutate(
-      { id: id.toString() },
+      { id: heroe.id.toString() },
       {
         onSuccess: () => {
           showAlert({
             title: "Pirkimas sėkmingas",
             message: "Sėkmingai nusipirktas personažas",
           });
+          refetch();
+          setUser({ points: Number(selectUser.points) - Number(heroe.cost) });
         },
         onError: (err) => {
           showAlert({
             title: "Trūksta taškų",
             message: "Netinkamas taškų kiekis norimam personažui nusipirkti.",
           });
+        },
+      }
+    );
+  };
+
+  const isBought = (name: string) => {
+    return childHeroes?.find((childHeroe) => {
+      return childHeroe.name === name;
+    });
+  };
+
+  const handleHeroFeed = (productId: string) => {
+    if (!selectedCharacter) {
+      showAlert({
+        title: "Maitinimas negalimas",
+        message:
+          "Negalite pamaitinti, nes neturite nusipirkę bent vieno herojaus.",
+      });
+      return;
+    }
+    feedHero.mutate(
+      {
+        heroId: selectedCharacter.acquiredHeroId,
+        productId,
+      },
+      {
+        onSuccess: () => {
+          refetch();
         },
       }
     );
@@ -85,26 +146,31 @@ export const CharacterPage: React.FC = () => {
               gap: 50,
             }}
           >
-            {heroes &&
-              heroes?.map((heroe) => (
-                <TouchableOpacity onPress={() => handleHeroBuy(heroe.id)}>
-                  <Image
-                    key={heroe.taskId}
-                    style={{
-                      height: 150,
-                      width: 150,
-                      opacity: childHeroes.find((childHeroe) => {
-                        console.log(childHeroe.id, heroe.id);
-                        return childHeroe.id === heroe.id;
-                      })
-                        ? 0.1
-                        : 1,
-                    }}
-                    alt='reward'
-                    source={{ uri: heroe.heroPng }}
-                  />
-                </TouchableOpacity>
-              ))}
+            <ScrollView>
+              {heroes &&
+                heroes?.map((heroe) => (
+                  <TouchableOpacity
+                    key={heroe.heroPng}
+                    onPress={() => handleHeroBuy(heroe, heroe.name)}
+                  >
+                    <Image
+                      key={heroe.taskId}
+                      style={{
+                        height: 150,
+                        width: 150,
+                        opacity: childHeroes?.find((childHeroe) => {
+                          return childHeroe.name === heroe.name;
+                        })
+                          ? 0.5
+                          : 1,
+                      }}
+                      alt='reward'
+                      source={{ uri: heroe.heroPng }}
+                    />
+                    <Text>{heroe.cost}</Text>
+                  </TouchableOpacity>
+                ))}
+            </ScrollView>
           </View>
         </View>
       )}
@@ -118,19 +184,54 @@ export const CharacterPage: React.FC = () => {
         </TouchableOpacity>
       </View>
       <BasePage>
-        <View style={{ display: "flex", justifyContent: "space-between" }}>
-          <Character />
-          <View style={{ marginTop: 20 }}>
-            <Healthbar />
-          </View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: !childHeroes?.length ? "center" : "stretch",
+          }}
+        >
+          <Character character={selectedCharacter} />
+          {childHeroes?.length && (
+            <View style={{ marginTop: 20 }}>
+              <Healthbar health={selectedCharacter?.health || 0} />
+            </View>
+          )}
+          {!childHeroes?.length && (
+            <View>
+              <Text>Neturite aktyvaus herojaus. Nusipirkite.</Text>
+            </View>
+          )}
         </View>
+        {childHeroes?.length && (
+          <TouchableOpacity onPress={changeHero}>
+            <Text>Pakeisti herojų</Text>
+          </TouchableOpacity>
+        )}
       </BasePage>
-      <View style={{ position: "absolute", bottom: "5%", display: 'flex', flexDirection: 'row', gap: 10 }}>
-        <View style={{ width: 50, height: 50, backgroundColor: "red" }}></View>
-        <View style={{ width: 50, height: 50, backgroundColor: "red" }}></View>
-        <View style={{ width: 50, height: 50, backgroundColor: "red" }}></View>
-        <View style={{ width: 50, height: 50, backgroundColor: "red" }}></View>
-        <View style={{ width: 50, height: 50, backgroundColor: "red" }}></View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: "5%",
+          display: "flex",
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        {products?.map((product) => (
+          <View
+            key={product.id}
+            style={{ width: 50, height: 50, backgroundColor: "red" }}
+          >
+            <TouchableOpacity onPress={() => handleHeroFeed(product.id)}>
+              <Image
+                style={{ height: 35, width: 35, margin: 10 }}
+                alt='reward'
+                source={{ uri: product.pictureUrl }}
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
       </View>
     </View>
   );

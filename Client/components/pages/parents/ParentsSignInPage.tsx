@@ -48,13 +48,13 @@ export const ParentsSignInPage: React.FC<{ navigation: any }> = ({
       {
         onSuccess: async (res) => {
           await AsyncStorage.setItem("token", res.token);
-          const { name, surname, email, id, roleId } = res;
+          const { name, surname, email, id, roleId, points } = res;
           await AsyncStorage.setItem(
             "user",
-            JSON.stringify({ name, surname, email, id, roleId })
+            JSON.stringify({ name, surname, email, id, roleId, points })
           );
           changeIsLoggedIn(true);
-          setUser(id);
+          setUser({ name, surname, email, id, roleId, points });
           navigation.navigate("Dashboard");
         },
       }

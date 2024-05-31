@@ -3,8 +3,11 @@ import React from "react";
 import { View } from "react-native";
 import { Character } from "../Character";
 import { Healthbar } from "../healthbar/Healthbar";
+import { useGetChildHeroes } from "../../../api/supabase/queries/heroesQueries";
 
 export const CharacterBlock: React.FC = () => {
+  const { data: childHeroes, refetch } = useGetChildHeroes();
+
   return (
     <View
       style={{
@@ -24,8 +27,10 @@ export const CharacterBlock: React.FC = () => {
           width: "40%",
         }}
       >
-        <Character />
-        <Healthbar />
+        <Character character={childHeroes?.[0] || null} />
+        {childHeroes?.length && (
+          <Healthbar health={childHeroes?.[0].health || 0} />
+        )}
       </View>
     </View>
   );
