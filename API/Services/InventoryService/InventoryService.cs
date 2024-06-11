@@ -14,6 +14,11 @@ namespace API.Services.InventoryService
 
         public async Task<GetIventoryDTO?> AddItemToInventoryAsync(int productId, string userId, int quantity = 1)
         {
+            if (quantity == 0)
+            {
+                return null;
+            }
+
             var child = await _supabaseClient.From<Child>()
                 .Where(x => x.Id == userId)
                 .Single();
@@ -44,7 +49,11 @@ namespace API.Services.InventoryService
 
             if (inventoryProduct != null)
             {
-                child.Points -= inventoryProduct.Product.Cost;
+                child.Points -= inventoryProduct.Product.Cost * quantity;
+                if (child.Points < 0)
+                {
+                    throw new ArgumentException("User does not have enough points to purchase this item.");
+                }
                 inventoryProduct.Quantity += quantity;
             }
             else
@@ -58,7 +67,11 @@ namespace API.Services.InventoryService
                     return null;
                 }
 
-                child.Points -= product.Cost;
+                child.Points -= product.Cost * quantity;
+                if(child.Points < 0)
+                {
+                    throw new ArgumentException("User does not have enough points to purchase this item.");
+                }
 
                 inventoryProduct = new InventoryItem()
                 {
@@ -116,14 +129,16 @@ namespace API.Services.InventoryService
             {
                 userInventory.Items.Remove(inventoryItem);
                 await _supabaseClient.From<InventoryItem>()
-                    .Where(x => x.Id == inventoryItem.Id)
+                    .Where(x => x.InventoryId == inventoryItem.InventoryId && x.ProductId == inventoryItem.ProductId)
                     .Delete();
             }
-
-            var result = await _supabaseClient.From<InventoryItem>()
-                .Where(x => x.Id == inventoryItem.Id)
-                .Set(x => x.Quantity, inventoryItem.Quantity)
-                .Update();
+            else
+            {
+                var result = await _supabaseClient.From<InventoryItem>()
+                    .Where(x => x.InventoryId == inventoryItem.InventoryId && x.ProductId == inventoryItem.ProductId)
+                    .Set(x => x.Quantity, inventoryItem.Quantity)
+                    .Update();
+            }
 
             return new GetIventoryDTO()
             {

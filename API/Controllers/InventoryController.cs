@@ -37,15 +37,21 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<GetIventoryDTO>> AddItem(int productId, int quantity)
         {
-            var userId = AuthUtilies.GetUserId(HttpContext);
-            var inventory = await _inventoryService.AddItemToInventoryAsync(productId, userId, quantity);
-            if (inventory == null)
+            try
             {
-                return BadRequest(new ProblemDetails() { Detail = "Invalid product provided."});
+                var userId = AuthUtilies.GetUserId(HttpContext);
+                var inventory = await _inventoryService.AddItemToInventoryAsync(productId, userId, quantity);
+                if (inventory == null)
+                {
+                    return BadRequest(new ProblemDetails() { Detail = "Invalid argument provided." });
+                }
+
+                return Ok(inventory);
             }
-
-            return Ok(inventory);
-
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new ProblemDetails() { Detail = ex.Message });
+            }      
         }
 
         [HttpDelete]
@@ -56,7 +62,7 @@ namespace API.Controllers
             var inventory = await _inventoryService.RemoveItemFromInventoryAsync(productId, userId, quantity);
             if (inventory == null)
             {
-                return BadRequest(new ProblemDetails() { Detail = "User does not have any items in the inventory or the invetory does not contain the product." });
+                return BadRequest(new ProblemDetails() { Detail = "User does not have any items in the inventory or the inventory does not contain the product." });
             }
 
             return Ok(inventory);
