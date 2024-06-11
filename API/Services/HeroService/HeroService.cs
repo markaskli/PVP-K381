@@ -2,6 +2,7 @@
 using API.Models.DTOs.Hero;
 using API.Models.DTOs.Product;
 using Microsoft.AspNetCore.Mvc;
+using Supabase.Gotrue;
 
 namespace API.Services.HeroService
 {
@@ -199,16 +200,31 @@ namespace API.Services.HeroService
                 return null;
             }
 
-            var product = await _supabaseClient.From<Product>()
-                .Where(p => p.Id == productId)
+            var userInventory = await _supabaseClient.From<Inventory>()
+                .Where(x => x.ChildId == childId)
                 .Single();
 
-            if (product == null)
+            if (userInventory == null)
             {
                 return null;
             }
 
-            acquiredHero.CurrentHealth += product.HealthChange;
+            var inventoryItem = userInventory.Items.Find(x => x.ProductId == productId);
+            if (inventoryItem == null)
+            {
+                return null;
+            }
+
+            //var product = await _supabaseClient.From<Product>()
+            //    .Where(p => p.Id == productId)
+            //    .Single();
+
+            //if (product == null)
+            //{
+            //    return null;
+            //}
+
+            acquiredHero.CurrentHealth += inventoryItem.Product.HealthChange;
             if (acquiredHero.CurrentHealth <= 0)
             {
                 await _supabaseClient.From<AcquiredHero>()
@@ -216,6 +232,22 @@ namespace API.Services.HeroService
                     .Delete();
 
                 return null;
+            }
+
+            inventoryItem.Quantity -= 1;
+            if (inventoryItem.Quantity <= 0)
+            {
+                userInventory.Items.Remove(inventoryItem);
+                await _supabaseClient.From<InventoryItem>()
+                    .Where(x => x.InventoryId == inventoryItem.InventoryId && x.ProductId == inventoryItem.ProductId)
+                    .Delete();
+            }
+            else
+            {
+                var result = await _supabaseClient.From<InventoryItem>()
+                    .Where(x => x.InventoryId == inventoryItem.InventoryId && x.ProductId == inventoryItem.ProductId)
+                    .Set(x => x.Quantity, inventoryItem.Quantity)
+                    .Update();
             }
 
             await acquiredHero.Update<AcquiredHero>();
