@@ -21,6 +21,18 @@ namespace API.Controllers
             _userService = userService;
         }
 
+        [HttpGet("points")]
+        public async Task<ActionResult> GetPointsOfUser(string userId)
+        {
+            var result = await _userService.GetPointsOfUser(userId);
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
         [HttpPost("signIn")]
         public async Task<ActionResult> SignIn(UserSignInDTO request)
         {
@@ -112,8 +124,7 @@ namespace API.Controllers
                 return BadRequest(new ProblemDetails() { Detail = message});
             }
 
-            
-
+          
         }
 
         [HttpPost("signOut")]

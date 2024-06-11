@@ -10,5 +10,6 @@ namespace API.Services.UserService
         Task<Session> SignIn(UserSignInDTO request);
         Task<Session> SignInChild(ChildSignInDTO request);
         Task<bool> SignOutAsync();
+        Task<string?> GetPointsOfUser(string userId);
     }
 }

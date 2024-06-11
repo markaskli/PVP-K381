@@ -14,6 +14,15 @@ namespace API.Services.InventoryService
 
         public async Task<GetIventoryDTO?> AddItemToInventoryAsync(int productId, string userId, int quantity = 1)
         {
+            var child = await _supabaseClient.From<Child>()
+                .Where(x => x.Id == userId)
+                .Single();
+
+            if (child == null)
+            {
+                return null;
+            }
+
             var userInventory = await _supabaseClient.From<Inventory>()
                 .Where(x => x.ChildId == userId)
                 .Single();
@@ -35,6 +44,7 @@ namespace API.Services.InventoryService
 
             if (inventoryProduct != null)
             {
+                child.Points -= inventoryProduct.Product.Cost;
                 inventoryProduct.Quantity += quantity;
             }
             else
@@ -48,9 +58,12 @@ namespace API.Services.InventoryService
                     return null;
                 }
 
+                child.Points -= product.Cost;
+
                 inventoryProduct = new InventoryItem()
                 {
                     InventoryId = userInventory.Id,
+                    Product = product,
                     ProductId = product.Id,
                     Quantity = quantity
                 };
@@ -60,6 +73,9 @@ namespace API.Services.InventoryService
 
             var result = await _supabaseClient.From<InventoryItem>()
                 .Upsert(inventoryProduct);
+
+            var userResult = await _supabaseClient.From<Child>()
+                .Update(child);
 
 
             return new GetIventoryDTO()
@@ -71,7 +87,8 @@ namespace API.Services.InventoryService
                     Name = it.Product.Name,
                     Description = it.Product.Description,
                     HealthChange = it.Product.HealthChange,
-                    Quantity = it.Quantity
+                    Quantity = it.Quantity,
+                    Cost = it.Product.Cost
                 }).ToList()
             };
 
@@ -117,7 +134,8 @@ namespace API.Services.InventoryService
                     Name = it.Product.Name,
                     Description = it.Product.Description,
                     HealthChange = it.Product.HealthChange,
-                    Quantity = inventoryItem.Quantity
+                    Quantity = it.Quantity,
+                    Cost = it.Product.Cost
                 }).ToList()
             };
 
@@ -143,7 +161,8 @@ namespace API.Services.InventoryService
                     Name = it.Product.Name,
                     Description = it.Product.Description,
                     HealthChange = it.Product.HealthChange,
-                    Quantity = it.Quantity
+                    Quantity = it.Quantity,
+                    Cost = it.Product.Cost
                 }).ToList()
             };
 

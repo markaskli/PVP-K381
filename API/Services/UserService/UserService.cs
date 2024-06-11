@@ -92,6 +92,22 @@ namespace API.Services.UserService
 
         }
 
+        public async Task<string?> GetPointsOfUser(string userId)
+        {
+            var userParams = new Dictionary<string, object>()
+            {
+                {"userid", userId },
+            };
+
+            var result = await _supabaseClient.Rpc("get_user_points", userParams);
+            if (result != null && result.ResponseMessage.IsSuccessStatusCode)
+            {
+                return result.Content;
+            }
+
+            return null;
+        }
+
         public async Task<bool> SignOutAsync()
         {
             var user = _supabaseClient.Auth.CurrentUser;

@@ -14,5 +14,7 @@ namespace API.Models
         public string? Description { get; set; }
         [Column("health_change")]
         public int HealthChange { get; set; }
+        [Column("cost")]
+        public int Cost { get; set; }
     }
 }

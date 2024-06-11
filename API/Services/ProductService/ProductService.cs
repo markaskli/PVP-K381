@@ -23,6 +23,7 @@ namespace API.Services.ProductService
             {
                 Name = request.Name,
                 Description = request.Description,
+                Cost = request.Cost,
                 HealthChange = request.HealthChange,
             };
 
@@ -37,6 +38,7 @@ namespace API.Services.ProductService
                 Name = result.Model.Name,
                 Description = result.Model.Description,
                 HealthChange = result.Model.HealthChange,
+                Cost = result.Model.Cost,
                 PictureUrl = _supabaseClient.Storage.From("product-images").GetPublicUrl($"product-{result.Model.Id}.png")
             };
         }
@@ -60,6 +62,7 @@ namespace API.Services.ProductService
                 Name = product.Name,
                 Description = product.Description,
                 HealthChange = product.HealthChange,
+                Cost = product.Cost,
                 PictureUrl = image
             };
         }
@@ -85,6 +88,7 @@ namespace API.Services.ProductService
                     Name = product.Name,
                     Description = product.Description,
                     HealthChange = product.HealthChange,
+                    Cost = product.Cost,
                     PictureUrl = image
 
                 });
