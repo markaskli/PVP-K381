@@ -102,17 +102,17 @@ export const ParentTaskPreview: React.FC<TaskPreviewProps> = ({
                     {completion.isConfirmedByParent ? "Atlikta" : "Neatlikta"}
                   </StyledText>
                   {!isPastCompletionDate &&
-                    (completion.isConfirmedByChild ||
-                      (!completion.isConfirmedByParent && (
-                        <Button
-                          onClick={() => handleTaskCompletion(completion.id)}
-                          color='#000'
-                        >
-                          <StyledText style={{ color: "#fff" }}>
-                            Patvirtinti
-                          </StyledText>
-                        </Button>
-                      )))}
+                    completion.isConfirmedByChild &&
+                    !completion.isConfirmedByParent && (
+                      <Button
+                        onClick={() => handleTaskCompletion(completion.id)}
+                        color='#000'
+                      >
+                        <StyledText style={{ color: "#fff" }}>
+                          Patvirtinti
+                        </StyledText>
+                      </Button>
+                    )}
                 </StyledView>
               </StyledView>
             ))}

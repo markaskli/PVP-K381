@@ -14,7 +14,6 @@ export const TaskList: React.FC<TaskListProps> = ({
   tasks,
   isStudent = false,
 }) => {
-  console.log(tasks);
   return (
     <View>
       <StyledView className='flex flex-col gap-4'>

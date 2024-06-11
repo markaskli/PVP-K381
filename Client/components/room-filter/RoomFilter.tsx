@@ -18,7 +18,7 @@ export const RoomFilter: React.FC<RoomFilterProps> = ({ rooms }) => {
   const { setSelectedGroup, selectedGroup } = useAppContext();
   if (!rooms) return;
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{marginVertical: 30}}>
       <View style={styles.container}>
         {selectedGroup && (
           <TouchableOpacity

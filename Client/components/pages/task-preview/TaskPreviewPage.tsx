@@ -16,8 +16,6 @@ export const TaskPreviewPage = () => {
   const { taskId } = route.params || {};
 
   const { data: tasks } = useGetAssignedTaskById(taskId);
-  console.log(tasks);
-
   const taskData = useMemo(() => {
     if (!tasks) return;
     const initialTask = tasks[0];

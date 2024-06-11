@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 import { useCreatePaymentIntent } from "../../api/supabase/queries/paymentQueries";
+import { useAppContext } from "../../contexts/appContext";
 
 type PaymentProps = {
   pointsToBuy: string;
@@ -10,6 +11,7 @@ type PaymentProps = {
 export const Payment: React.FC<PaymentProps> = ({ pointsToBuy }) => {
   const [clientSecret, setClientSecret] = useState("");
   const createPaymentIntent = useCreatePaymentIntent();
+  const { modifyPoints } = useAppContext();
 
   const showAlert = ({ title, message }: { title: string; message: string }) =>
     Alert.alert(
@@ -74,6 +76,7 @@ export const Payment: React.FC<PaymentProps> = ({ pointsToBuy }) => {
         title: "Mokėjimas sėkmingas",
         message: `Sėkmingai nupirkta ${paymentIntent.amount / 10} taškų`,
       });
+      modifyPoints(paymentIntent.amount / 10);
     }
   };
 
