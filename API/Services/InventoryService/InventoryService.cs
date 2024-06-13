@@ -91,6 +91,7 @@ namespace API.Services.InventoryService
                 .Update(child);
 
 
+
             return new GetIventoryDTO()
             {
                 Id = userInventory.Id,
@@ -99,6 +100,7 @@ namespace API.Services.InventoryService
                     Id = it.ProductId,
                     Name = it.Product.Name,
                     Description = it.Product.Description,
+                    PictureUrl = _supabaseClient.Storage.From("product-images").GetPublicUrl($"product-{it.ProductId}.png"),
                     HealthChange = it.Product.HealthChange,
                     Quantity = it.Quantity,
                     Cost = it.Product.Cost
@@ -148,6 +150,7 @@ namespace API.Services.InventoryService
                     Id = it.ProductId,
                     Name = it.Product.Name,
                     Description = it.Product.Description,
+                    PictureUrl = _supabaseClient.Storage.From("product-images").GetPublicUrl($"product-{it.ProductId}.png"),
                     HealthChange = it.Product.HealthChange,
                     Quantity = it.Quantity,
                     Cost = it.Product.Cost
@@ -175,6 +178,7 @@ namespace API.Services.InventoryService
                     Id = it.ProductId,
                     Name = it.Product.Name,
                     Description = it.Product.Description,
+                    PictureUrl = _supabaseClient.Storage.From("product-images").GetPublicUrl($"product-{it.ProductId}.png"),
                     HealthChange = it.Product.HealthChange,
                     Quantity = it.Quantity,
                     Cost = it.Product.Cost
